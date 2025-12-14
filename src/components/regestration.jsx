@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Users, CheckCircle, Plus, MoveRight } from 'lucide-react';
 
-export default function Registration() {
+export default function Registration({setform,onsubmit}) {
   const [formData, setFormData] = useState({
     teamName: '',
     collegeType: 'srkr',
@@ -13,7 +13,9 @@ export default function Registration() {
       department: '',
       year: '1st Year',
       location: '',
-      tshirtSize: ''
+      tshirtSize: '',
+      isCsi:null,
+      price:""
     },
     teamMembers: []
   });
@@ -31,7 +33,11 @@ export default function Registration() {
             mobile: '',
             department: '',
             year: '1st Year',
-            tshirtSize: ''
+            tshirtSize: '',
+            location:'',
+            isCsi:null,
+            price:""
+
           }
         ]
       });
@@ -66,6 +72,8 @@ export default function Registration() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setform(formData)
+    onsubmit()
     console.log('Form Data:', formData);
   };
 
@@ -154,6 +162,11 @@ export default function Registration() {
                 <h2 className="text-xl md:text-2xl font-bold" style={{ color: '#d97706' }}>
                   Team Lead
                 </h2>
+                <span className="ml-auto inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
+                {
+                  formData.teamLead.isCsi?"-/₹750":"-/₹850"
+                }
+                  </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
@@ -269,6 +282,21 @@ export default function Registration() {
                     <option value="XXL">XXL</option>
                   </select>
                 </div>
+                
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input type="checkbox" value={"Yes"} 
+                     onChange={(e) => {
+                      updateTeamLead("isCsi",e.target.checked);
+                     }}
+                      className="sr-only peer"/>
+                      <div className="relative w-9 h-5 bg-neutral-quaternary peer-focus:outline-none peer-focus:ring-4 
+                      peer-focus:ring-brand-soft dark:peer-focus:ring-brand-soft rounded-full peer peer-checked:after:translate-x-full
+                       rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] 
+                       after:absolute after:top-[2px] after:start-[2px] 
+                       after:bg-black after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
+                      <span className="select-none ms-3 text-sm font-medium text-heading">Are You CSi Member?</span>
+                    </label>
+
               </div>
             </div>
 
@@ -288,6 +316,16 @@ export default function Registration() {
                   >
                     <X size={20} />
                   </button>
+                 <span className="ml-auto inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
+  {
+    formData.teamMembers.some(
+      data => data.id === member.id && data.isCsi
+    )
+      ? "- ₹750"
+      : "- ₹850"
+  }
+</span>
+
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
@@ -390,6 +428,33 @@ export default function Registration() {
                       <option value="XXL">XXL</option>
                     </select>
                   </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Bhimavaram, Andhra Pradesh"
+                    value={member.location}
+                    onChange={(e) => updateTeamMember(member.id,"location",e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
+                  />
+                </div>
+                <label className="inline-flex items-center cursor-pointer">
+                      <input type="checkbox" value={"Yes"} 
+                     onChange={(e) => {
+                      updateTeamMember(member.id,"isCsi",e.target.checked)
+                      updateTeamMember(member.id,"price",e.target.checked?"750":"850")
+                     }}
+                      className="sr-only peer"/>
+                      <div className="relative w-9 h-5 bg-neutral-quaternary peer-focus:outline-none peer-focus:ring-4 
+                      peer-focus:ring-brand-soft dark:peer-focus:ring-brand-soft rounded-full peer peer-checked:after:translate-x-full
+                       rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] 
+                       after:absolute after:top-[2px] after:start-[2px] 
+                       after:bg-black after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
+                      <span className="select-none ms-3 text-sm font-medium text-heading">Are You CSi Member?</span>
+                    </label>
+                  
                 </div>
               </div>
             ))}

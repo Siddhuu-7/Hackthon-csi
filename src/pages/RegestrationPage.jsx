@@ -1,25 +1,31 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Registration from '../components/regestration';
+import PaymentSummary from '../components/Payment';
 export default function RegistrationPage() {
   const canvasRef = useRef(null);
-
+  const [formdata,setformData]=useState(null)
+  const [back,setBack]=useState(true)
+   const goback=()=>{
+      setBack(!back)
+    }
+    const goToPayment=()=>{
+      setBack(!back)
+    }
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     let animationFrameId;
     
-    // Set canvas size
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-
-    // OPTIMIZED: Reduced particle count
+   
     const particles = [];
-    const particleCount = 60; // Reduced from 150
-    const maxDistance = 150; // Increased from 120 for better connections
+    const particleCount = 60; 
+    const maxDistance = 150; 
 
     class Particle {
       constructor() {
@@ -30,7 +36,6 @@ export default function RegistrationPage() {
         this.speedY = (Math.random() - 0.5) * 0.4;
         this.opacity = Math.random() * 0.5 + 0.3;
         
-        // Color based on position
         const leftSide = this.x < canvas.width / 2;
         
         if (leftSide) {
@@ -59,21 +64,18 @@ export default function RegistrationPage() {
       }
     }
 
-    // Initialize particles
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle());
     }
 
-    // OPTIMIZED: Only draw connections, skip complex triangles
     const drawConnections = () => {
       for (let i = 0; i < particles.length; i++) {
-        // OPTIMIZED: Only check next 10 particles instead of all
         const checkLimit = Math.min(i + 15, particles.length);
         
         for (let j = i + 1; j < checkLimit; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const distance = dx * dx + dy * dy; // Skip sqrt for performance
+          const distance = dx * dx + dy * dy; 
           const maxDistSq = maxDistance * maxDistance;
 
           if (distance < maxDistSq) {
@@ -97,10 +99,9 @@ export default function RegistrationPage() {
       }
     };
 
-    // OPTIMIZED: Simplified triangle drawing with limits
     const drawTriangles = () => {
       let triangleCount = 0;
-      const maxTriangles = 50; // Limit triangles drawn per frame
+      const maxTriangles = 50; 
       
       for (let i = 0; i < particles.length && triangleCount < maxTriangles; i++) {
         for (let j = i + 1; j < Math.min(i + 10, particles.length) && triangleCount < maxTriangles; j++) {
@@ -135,7 +136,6 @@ export default function RegistrationPage() {
       }
     };
 
-    // Animation loop
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -152,7 +152,6 @@ export default function RegistrationPage() {
 
     animate();
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       cancelAnimationFrame(animationFrameId);
@@ -161,7 +160,6 @@ export default function RegistrationPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Dark gradient background */}
       <div 
         className="absolute top-0 left-0 w-full h-full"
         style={{
@@ -169,14 +167,12 @@ export default function RegistrationPage() {
         }}
       />
       
-      {/* Animated Canvas */}
       <canvas
         ref={canvasRef}
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
         style={{ mixBlendMode: 'screen' }}
       />
       
-      {/* Center fade overlay */}
       <div 
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
         style={{
@@ -184,13 +180,12 @@ export default function RegistrationPage() {
         }}
       />
       
-      {/* Content */}
       <div className="relative z-10 p-4 md:p-8">
         <div className="max-w-5xl mx-auto">
-           <Registration/>
-            
-           
-          
+           {
+            formdata!==null&&!back?<PaymentSummary formData={formdata} goback={goback} />
+:<Registration setform={setformData} onsubmit={goToPayment}/>
+           }
         </div>
       </div>
     </div>
