@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Users, FileText, Calendar, Award, Target, Zap, Trophy, Clock, MapPin, Mail, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Image  from '../assets/image.jpg';
 export default function Home() {
   const canvasRef = useRef(null);
   const [scrollY, setScrollY] = useState(0);
@@ -194,7 +195,7 @@ export default function Home() {
             </button>
 
             <button
-              onClick={() => handleNavigation('/problem-statements')}
+              onClick={() => handleNavigation('/statement')}
               className="group px-8 py-4 bg-white/5 backdrop-blur-md text-white font-bold text-lg rounded-xl border-2 border-white/20 hover:bg-white/10 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3"
             >
               <FileText size={24} />
@@ -231,22 +232,23 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
-              <h3 className="text-2xl font-bold text-white mb-4">What is InnoHack?</h3>
-              <p className="text-gray-300 leading-relaxed mb-4">
-                InnoHack 2025 is a premier 24-hour hackathon where teams of passionate developers, designers, and innovators come together to build solutions that matter.
-              </p>
-              <p className="text-gray-300 leading-relaxed">
-                Choose from 10+ problem statements across various domains, collaborate with your team, and create innovative solutions with guidance from industry mentors.
-              </p>
-            </div>
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+  <div className="md:col-span-2 bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
+    <img
+      src={Image}
+      alt="Sample"
+      className="w-full h-90 md:h-[400px] object-cover rounded-xl"
+    />
+  </div>
+</div>
+
 
             <div className="space-y-4">
               {[
                 { icon: <Calendar />, title: 'Event Date', desc: 'January 20-21, 2025' },
                 { icon: <MapPin />, title: 'Venue', desc: 'SRKR Engineering College' },
                 { icon: <Users />, title: 'Team Size', desc: '4-6 Members per Team' },
-                { icon: <Trophy />, title: 'Registration', desc: '₹500 per member' }
+                { icon: <Trophy />, title: 'Registration', desc: '₹50 per member' }
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-4 bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/10 transition-all">
                   <div className="p-3 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg text-white">

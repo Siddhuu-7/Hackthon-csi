@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, Users, CheckCircle, Plus, MoveRight } from 'lucide-react';
+import { X, Users, CheckCircle, Plus, MoveRight, MoveLeft } from 'lucide-react';
+import { replace, useNavigate } from 'react-router-dom';
 
 export default function Registration({setform,onsubmit}) {
   const [formData, setFormData] = useState({
@@ -43,7 +44,7 @@ export default function Registration({setform,onsubmit}) {
       });
     }
   };
-
+  const navigate=useNavigate()
   const deleteTeamMember = (id) => {
     setFormData({
       ...formData,
@@ -82,9 +83,18 @@ export default function Registration({setform,onsubmit}) {
       <div className="max-w-4xl mx-auto">
         <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-4 md:p-6 lg:p-8">
           <div className="mb-6 md:mb-8">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 bg-gradient-to-r from-[#0f2027] via-[#1d2a38] to-[#203a43] bg-clip-text text-transparent animate-gradient">
-              Team Registration
-            </h1>
+            <h1 className="flex items-center gap-3 text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 bg-gradient-to-r from-[#0f2027] via-[#1d2a38] to-[#203a43] bg-clip-text  animate-gradient">
+  <button
+  onClick={() => navigate(-1)}
+  className="p-2 rounded-full bg-black/10 hover:bg-black/20 transition"
+>
+  <MoveLeft size={24} />
+</button>
+
+
+  Team Registration
+</h1>
+
             <p className="text-gray-600 text-sm md:text-base lg:text-lg">
               Enter the Team Lead details and add team members. Minimum 4 members total (including team lead), maximum 6 members total.
             </p>
@@ -289,11 +299,25 @@ export default function Registration({setform,onsubmit}) {
                       updateTeamLead("isCsi",e.target.checked);
                      }}
                       className="sr-only peer"/>
-                      <div className="relative w-9 h-5 bg-neutral-quaternary peer-focus:outline-none peer-focus:ring-4 
-                      peer-focus:ring-brand-soft dark:peer-focus:ring-brand-soft rounded-full peer peer-checked:after:translate-x-full
-                       rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] 
-                       after:absolute after:top-[2px] after:start-[2px] 
-                       after:bg-black after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
+                      <div
+                  className="
+                    relative w-9 h-5
+                    bg-neutral-quaternary
+                    border border-gray-400
+                    peer-focus:outline-none
+                    peer-focus:ring-2 peer-focus:ring-brand-soft
+                    rounded-full
+                    peer-checked:after:translate-x-full
+                    rtl:peer-checked:after:-translate-x-full
+                    after:content-['']
+                    after:absolute after:top-[2px] after:start-[2px]
+                    after:bg-black after:rounded-full after:h-4 after:w-4
+                    after:transition-all
+                    peer-checked:bg-brand
+                    peer-checked:border-brand
+                  "
+                ></div>
+
                       <span className="select-none ms-3 text-sm font-medium text-heading">Are You CSi Member?</span>
                     </label>
 
