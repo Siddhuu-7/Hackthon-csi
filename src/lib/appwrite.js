@@ -1,4 +1,4 @@
-import { Client, Databases, Account, ID, Query } from "appwrite";
+import { Client, Databases, Account, ID, Query, OAuthProvider } from "appwrite";
 
 const client = new Client();
 client
@@ -34,6 +34,19 @@ export const authService = {
   async login(email, password) {
     try {
       return await account.createEmailPasswordSession(email, password);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Login with Google OAuth
+  loginWithGoogle() {
+    try {
+      account.createOAuth2Session(
+        OAuthProvider.Google,
+        window.location.origin + '/registration', // Success redirect
+        window.location.origin + '/auth'          // Failure redirect
+      );
     } catch (error) {
       throw error;
     }

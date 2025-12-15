@@ -63,12 +63,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = () => {
+    try {
+      authService.loginWithGoogle();
+    } catch (error) {
+      console.error("Google login error:", error);
+    }
+  };
+
   const value = {
     user,
     loading,
     login,
     signup,
     logout,
+    loginWithGoogle,
     isAuthenticated: !!user,
   };
 
