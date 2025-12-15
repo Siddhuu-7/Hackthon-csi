@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
-import { X, Users, CheckCircle, Plus, MoveRight, MoveLeft } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Users, CheckCircle, Plus, MoveRight, MoveLeft, Loader2, Save, CheckCheck } from 'lucide-react';
 import { replace, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { teamService } from '../lib/appwrite';
 
 export default function Registration({setform,onsubmit}) {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState(null); // 'saving', 'saved', 'error'
+  const [teamId, setTeamId] = useState(null);
   const [formData, setFormData] = useState({
     teamName: '',
     collegeType: 'srkr',
@@ -21,35 +28,137 @@ export default function Registration({setform,onsubmit}) {
     teamMembers: []
   });
 
-  const addTeamMember = () => {
+  // Load existing team data on mount
+  useEffect(() => {
+    const loadExistingData = async () => {
+      if (user) {
+        try {
+          const existingData = await teamService.loadFullTeamData(user.$id);
+          if (existingData) {
+            setTeamId(existingData.teamId);
+            setFormData({
+              teamName: existingData.teamName,
+              collegeType: existingData.collegeType,
+              otherCollege: existingData.otherCollege,
+              teamLead: existingData.teamLead,
+              teamMembers: existingData.teamMembers
+            });
+          } else {
+            // Auto-fill team lead info from authenticated user for new registration
+            setFormData(prev => ({
+              ...prev,
+              teamLead: {
+                ...prev.teamLead,
+                name: user.name || prev.teamLead.name,
+                email: user.email || prev.teamLead.email
+              }
+            }));
+          }
+        } catch (error) {
+          console.error("Error loading team data:", error);
+          // Still auto-fill basic info on error
+          setFormData(prev => ({
+            ...prev,
+            teamLead: {
+              ...prev.teamLead,
+              name: user.name || prev.teamLead.name,
+              email: user.email || prev.teamLead.email
+            }
+          }));
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    loadExistingData();
+  }, [user]);
+
+  // Auto-save function
+  const autoSave = async () => {
+    if (!user || !formData.teamName || !formData.teamLead.name) return;
+    
+    setSaveStatus('saving');
+    try {
+      const savedTeam = await teamService.saveTeam(user.$id, formData);
+      setTeamId(savedTeam.$id);
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus(null), 2000);
+    } catch (error) {
+      console.error("Auto-save error:", error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus(null), 3000);
+    }
+  };
+
+  // Debounced auto-save on form changes
+  useEffect(() => {
+    if (loading) return;
+    const timer = setTimeout(() => {
+      if (formData.teamName && formData.teamLead.name) {
+        autoSave();
+      }
+    }, 2000); // Save 2 seconds after last change
+    return () => clearTimeout(timer);
+  }, [formData.teamName, formData.collegeType, formData.otherCollege, formData.teamLead, loading]);
+
+  const addTeamMember = async () => {
     if (formData.teamMembers.length < 5) {
+      const newMember = {
+        id: Date.now(),
+        name: '',
+        email: '',
+        mobile: '',
+        department: '',
+        year: '1st Year',
+        tshirtSize: '',
+        location:'',
+        isCsi:null,
+        price:""
+      };
+      
       setFormData({
         ...formData,
-        teamMembers: [
-          ...formData.teamMembers,
-          {
-            id: Date.now(),
-            name: '',
-            email: '',
-            mobile: '',
-            department: '',
-            year: '1st Year',
-            tshirtSize: '',
-            location:'',
-            isCsi:null,
-            price:""
-
-          }
-        ]
+        teamMembers: [...formData.teamMembers, newMember]
       });
     }
   };
   const navigate=useNavigate()
-  const deleteTeamMember = (id) => {
+  
+  const deleteTeamMember = async (id) => {
+    const member = formData.teamMembers.find(m => m.id === id);
+    
+    // If member has a database ID, delete from database
+    if (member?.dbId) {
+      try {
+        await teamService.deleteTeamMember(member.dbId);
+      } catch (error) {
+        console.error("Error deleting member from database:", error);
+      }
+    }
+    
     setFormData({
       ...formData,
       teamMembers: formData.teamMembers.filter(member => member.id !== id)
     });
+  };
+
+  // Save team member to database
+  const saveTeamMember = async (member) => {
+    if (!teamId || !member.name || !member.email) return;
+    
+    try {
+      const savedMember = await teamService.saveTeamMember(teamId, member, member.dbId);
+      
+      // Update the member with database ID
+      setFormData(prev => ({
+        ...prev,
+        teamMembers: prev.teamMembers.map(m => 
+          m.id === member.id ? { ...m, dbId: savedMember.$id } : m
+        )
+      }));
+    } catch (error) {
+      console.error("Error saving team member:", error);
+    }
   };
 
   const updateTeamLead = (field, value) => {
@@ -63,40 +172,94 @@ export default function Registration({setform,onsubmit}) {
   };
 
   const updateTeamMember = (id, field, value) => {
+    const updatedMembers = formData.teamMembers.map(member =>
+      member.id === id ? { ...member, [field]: value } : member
+    );
+    
     setFormData({
       ...formData,
-      teamMembers: formData.teamMembers.map(member =>
-        member.id === id ? { ...member, [field]: value } : member
-      )
+      teamMembers: updatedMembers
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setform(formData)
-    onsubmit()
-    console.log('Form Data:', formData);
+  // Save member when they blur out of a field (debounced)
+  const handleMemberBlur = async (member) => {
+    if (teamId && member.name && member.email) {
+      await saveTeamMember(member);
+    }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    
+    try {
+      // Save the team first
+      const savedTeam = await teamService.saveTeam(user.$id, formData);
+      const currentTeamId = savedTeam.$id;
+      setTeamId(currentTeamId);
+      
+      // Save all team members
+      for (const member of formData.teamMembers) {
+        if (member.name && member.email) {
+          await teamService.saveTeamMember(currentTeamId, member, member.dbId);
+        }
+      }
+      
+      setform(formData);
+      onsubmit();
+    } catch (error) {
+      console.error("Error saving registration:", error);
+      alert("Error saving registration. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-orange-500 mx-auto mb-4" />
+          <p className="text-gray-600">Loading your registration data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
       <div className="max-w-4xl mx-auto">
         <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-4 md:p-6 lg:p-8">
           <div className="mb-6 md:mb-8">
-            <h1 className="flex items-center gap-3 text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 bg-gradient-to-r from-[#0f2027] via-[#1d2a38] to-[#203a43] bg-clip-text  animate-gradient">
-  <button
-  onClick={() => navigate(-1)}
-  className="p-2 rounded-full bg-black/10 hover:bg-black/20 transition"
->
-  <MoveLeft size={24} />
-</button>
-
-
-  Team Registration
-</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="flex items-center gap-3 text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 bg-gradient-to-r from-[#0f2027] via-[#1d2a38] to-[#203a43] bg-clip-text animate-gradient">
+                <button
+                  onClick={() => navigate(-1)}
+                  className="p-2 rounded-full bg-black/10 hover:bg-black/20 transition"
+                >
+                  <MoveLeft size={24} />
+                </button>
+                Team Registration
+              </h1>
+              
+              {/* Save status indicator */}
+              {saveStatus && (
+                <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+                  saveStatus === 'saving' ? 'bg-blue-100 text-blue-700' :
+                  saveStatus === 'saved' ? 'bg-green-100 text-green-700' :
+                  'bg-red-100 text-red-700'
+                }`}>
+                  {saveStatus === 'saving' && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {saveStatus === 'saved' && <CheckCheck className="w-4 h-4" />}
+                  {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : 'Save failed'}
+                </div>
+              )}
+            </div>
 
             <p className="text-gray-600 text-sm md:text-base lg:text-lg">
               Enter the Team Lead details and add team members. Minimum 4 members total (including team lead), maximum 6 members total.
+              {teamId && <span className="text-green-600 ml-2">✓ Your progress is auto-saved</span>}
             </p>
           </div>
 
@@ -295,6 +458,7 @@ export default function Registration({setform,onsubmit}) {
                 
                     <label className="inline-flex items-center cursor-pointer">
                       <input type="checkbox" value={"Yes"} 
+                      checked={formData.teamLead.isCsi || false}
                      onChange={(e) => {
                       updateTeamLead("isCsi",e.target.checked);
                      }}
@@ -466,6 +630,7 @@ export default function Registration({setform,onsubmit}) {
                 </div>
                 <label className="inline-flex items-center cursor-pointer">
                       <input type="checkbox" value={"Yes"} 
+                      checked={member.isCsi || false}
                      onChange={(e) => {
                       updateTeamMember(member.id,"isCsi",e.target.checked)
                       updateTeamMember(member.id,"price",e.target.checked?"750":"850")
@@ -504,13 +669,23 @@ export default function Registration({setform,onsubmit}) {
             <button
               type="button"
               onClick={handleSubmit}
-              className="w-full flex items-center justify-center gap-2 py-3 md:py-4 text-white font-bold text-base md:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:brightness-110"
+              disabled={saving}
+              className="w-full flex items-center justify-center gap-2 py-3 md:py-4 text-white font-bold text-base md:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
               style={{
                 background: 'linear-gradient(135deg, #0f2027, #1d2a38, #203a43)',
               }}
             >
-              <MoveRight className="w-5 h-5 md:w-6 md:h-6" />
-              <span>Payment</span>
+              {saving ? (
+                <>
+                  <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <>
+                  <MoveRight className="w-5 h-5 md:w-6 md:h-6" />
+                  <span>Continue to Payment</span>
+                </>
+              )}
             </button>
 
           </div>

@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Users, FileText, Calendar, Award, Target, Zap, Trophy, Clock, MapPin, Mail, Phone } from 'lucide-react';
+import { ArrowRight, Users, FileText, Calendar, Award, Target, Zap, Trophy, Clock, MapPin, Mail, Phone, LogIn, LogOut, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Image  from '../assets/image.jpg';
+import { useAuth } from '../context/AuthContext';
+
 export default function Home() {
   const canvasRef = useRef(null);
   const [scrollY, setScrollY] = useState(0);
   const navigate=useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
@@ -151,12 +154,48 @@ export default function Home() {
               <a href="#faq" className="text-gray-300 hover:text-white transition-colors">FAQ</a>
             </div>
 
-            <button
-              onClick={() => handleNavigation('/registration')}
-              className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg hover:brightness-110 transition-all"
-            >
-              Register
-            </button>
+            <div className="flex items-center gap-3">
+              {isAuthenticated ? (
+                <>
+                  <div className="hidden sm:flex items-center gap-2 text-gray-300">
+                    <User size={18} />
+                    <span className="text-sm">{user?.name || user?.email}</span>
+                  </div>
+                  <button
+                    onClick={() => handleNavigation('/registration')}
+                    className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg hover:brightness-110 transition-all"
+                  >
+                    Register Team
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await logout();
+                      navigate('/');
+                    }}
+                    className="px-4 py-2 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all flex items-center gap-2"
+                  >
+                    <LogOut size={18} />
+                    <span className="hidden sm:inline">Logout</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => handleNavigation('/auth')}
+                    className="px-4 py-2 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all flex items-center gap-2"
+                  >
+                    <LogIn size={18} />
+                    <span>Login</span>
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/registration')}
+                    className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg hover:brightness-110 transition-all"
+                  >
+                    Register
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </nav>
