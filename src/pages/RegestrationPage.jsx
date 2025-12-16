@@ -1,10 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Registration from '../components/regestration';
 import PaymentSummary from '../components/Payment';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { LogOut, User, Zap } from 'lucide-react';
+
 export default function RegistrationPage() {
   const canvasRef = useRef(null);
   const [formdata,setformData]=useState(null)
   const [back,setBack]=useState(true)
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
+
    const goback=()=>{
       setBack(!back)
     }
@@ -179,6 +191,36 @@ export default function RegistrationPage() {
           background: 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%)'
         }}
       />
+
+      {/* Header with user info */}
+      <div className="relative z-20 bg-black/30 backdrop-blur-md border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
+              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                <Zap className="text-white" size={24} />
+              </div>
+              <span className="text-white font-bold text-xl">InnoHack 2025</span>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              {user && (
+                <div className="flex items-center gap-2 text-gray-300">
+                  <User size={18} />
+                  <span className="text-sm hidden sm:inline">{user.name || user.email}</span>
+                </div>
+              )}
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all flex items-center gap-2"
+              >
+                <LogOut size={18} />
+                <span className="hidden sm:inline">Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       
       <div className="relative z-10 p-4 md:p-8">
         <div className="max-w-5xl mx-auto">
