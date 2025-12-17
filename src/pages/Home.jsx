@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Users, FileText, Calendar, Award, Target, Zap, Trophy, Clock, MapPin, Mail, Phone, LogIn, LogOut, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Image from '../assets/image.jpg';
-import Image  from '../assets/image.jpg';
 import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
@@ -10,8 +9,6 @@ export default function Home() {
   const [scrollY, setScrollY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
-
-  const navigate=useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
   useEffect(() => {
     setIsLoaded(true);
@@ -337,7 +334,7 @@ export default function Home() {
           <div className="relative">
             {/* Continuous Vertical Line */}
             {/* MAIN CONTINUOUS VERTICAL LINE */}
-            <div className="absolute left-[1.2rem] md:left-1/2 top-0 bottom-0 w-0.5 bg-white/20 md:-translate-x-1/2"></div>
+            <div className="absolute left-[1.2rem] md:left-1/2 top-0 bottom-0 w-0.5 bg-white/20 md:-translate-x-1/2 z-0"></div>
 
 
             <div className="space-y-12">
@@ -354,7 +351,7 @@ export default function Home() {
                 <div key={idx} className={`relative flex flex-col md:flex-row gap-8 items-center group/item ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
 
                   {/* Content Side */}
-                  <div className="flex-1 w-full md:w-1/2 pl-12 md:pl-0 z-10">
+                  <div className="flex-1 w-full md:w-1/2 pl-12 md:pl-0 z-20">
                     <div className={`bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/10 hover:border-orange-500/50 transition-all duration-300 group hover:shadow-xl hover:shadow-orange-500/10 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
                       <div className={`flex flex-col gap-2 mb-3 ${idx % 2 === 0 ? 'md:items-end' : 'md:items-start'}`}>
                         <h3 className="text-2xl font-bold text-white group-hover:text-orange-400 transition-colors">{event.title}</h3>
@@ -368,11 +365,19 @@ export default function Home() {
                   </div>
 
                   {/* Center Dot */}
-                  <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-gray-800 rounded-full border-2 border-orange-500 z-20 md:-translate-x-1/2 group-hover/item:bg-orange-500 group-hover/item:shadow-[0_0_15px_rgba(249,115,22,0.8)] transition-all duration-300"></div>
+                  <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-gray-800 rounded-full border-2 border-orange-500 z-30 md:-translate-x-1/2 group-hover/item:bg-orange-500 group-hover/item:shadow-[0_0_15px_rgba(249,115,22,0.8)] transition-all duration-300"></div>
 
                   {/* Connecting Line to Next Event */}
-
-
+                  {idx < arr.length - 1 && (
+                    <div
+                      className="absolute left-[1.2rem] md:left-1/2 top-1/2 w-0.5 h-[calc(100%+3rem)] opacity-0 group-hover/item:opacity-100 group-hover/item:timeline-glow-animate transition-opacity duration-500 z-10 md:-translate-x-1/2"
+                      style={{
+                        background: 'linear-gradient(180deg, rgba(168, 85, 247, 0) 0%, rgba(168, 85, 247, 0.9) 25%, rgba(217, 70, 239, 0.9) 50%, rgba(168, 85, 247, 0.9) 75%, rgba(168, 85, 247, 0) 100%)',
+                        backgroundSize: '100% 200%',
+                        boxShadow: '0 0 15px rgba(168, 85, 247, 0.8), 0 0 25px rgba(217, 70, 239, 0.6)'
+                      }}
+                    ></div>
+                  )}
                   {/* Empty Side for Balance */}
                   <div className="hidden md:block flex-1"></div>
                 </div>
