@@ -4,6 +4,73 @@ import { useNavigate } from 'react-router-dom';
 import Image from '../assets/image.jpg';
 import { useAuth } from '../context/AuthContext';
 
+// Timeline Event Component with individual scroll tracking
+function TimelineEvent({ event, idx, totalEvents }) {
+  const eventRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.3 } // Trigger when 30% of event is visible
+    );
+
+    if (eventRef.current) {
+      observer.observe(eventRef.current);
+    }
+
+    return () => {
+      if (eventRef.current) {
+        observer.unobserve(eventRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div
+      ref={eventRef}
+      className={`relative flex flex-col md:flex-row gap-8 items-center group/item transition-all duration-700 ease-out ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''} ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+    >
+      {/* Content Side */}
+      <div className="flex-1 w-full md:w-1/2 pl-12 md:pl-0 z-20">
+        <div className={`bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/10 hover:border-orange-500/50 transition-all duration-300 group hover:shadow-xl hover:shadow-orange-500/10 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
+          <div className={`flex flex-col gap-2 mb-3 ${idx % 2 === 0 ? 'md:items-end' : 'md:items-start'}`}>
+            <h3 className="text-2xl font-bold text-white group-hover:text-orange-400 transition-colors">{event.title}</h3>
+            <span className="text-orange-400 font-semibold flex items-center gap-2 bg-orange-500/10 px-3 py-1 rounded-full w-fit">
+              <Clock size={16} />
+              {event.time}
+            </span>
+          </div>
+          <p className="text-gray-400 leading-relaxed">{event.desc}</p>
+        </div>
+      </div>
+
+      {/* Center Dot */}
+      <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-gray-800 rounded-full border-2 border-orange-500 z-30 md:-translate-x-1/2 group-hover/item:bg-orange-500 group-hover/item:shadow-[0_0_15px_rgba(249,115,22,0.8)] transition-all duration-300"></div>
+
+      {/* Connecting Line to Next Event */}
+      {idx < totalEvents - 1 && (
+        <div
+          className="absolute left-[1.2rem] md:left-1/2 top-1/2 w-0.5 h-[calc(100%+3rem)] opacity-0 group-hover/item:opacity-100 group-hover/item:timeline-glow-animate transition-opacity duration-500 z-10 md:-translate-x-1/2"
+          style={{
+            background: 'linear-gradient(180deg, rgba(168, 85, 247, 0) 0%, rgba(168, 85, 247, 0.9) 25%, rgba(217, 70, 239, 0.9) 50%, rgba(168, 85, 247, 0.9) 75%, rgba(168, 85, 247, 0) 100%)',
+            backgroundSize: '100% 200%',
+            boxShadow: '0 0 15px rgba(168, 85, 247, 0.8), 0 0 25px rgba(217, 70, 239, 0.6)'
+          }}
+        ></div>
+      )}
+
+      {/* Empty Side for Balance */}
+      <div className="hidden md:block flex-1"></div>
+    </div>
+  );
+}
+
 export default function Home() {
   const canvasRef = useRef(null);
   const [scrollY, setScrollY] = useState(0);
@@ -348,39 +415,7 @@ export default function Home() {
                 { time: '02:00 PM', title: 'Presentations', desc: 'Teams pitch their solutions' },
                 { time: '05:00 PM', title: 'Award Ceremony', desc: 'Winners announced!' }
               ].map((event, idx, arr) => (
-                <div key={idx} className={`relative flex flex-col md:flex-row gap-8 items-center group/item ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
-
-                  {/* Content Side */}
-                  <div className="flex-1 w-full md:w-1/2 pl-12 md:pl-0 z-20">
-                    <div className={`bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/10 hover:border-orange-500/50 transition-all duration-300 group hover:shadow-xl hover:shadow-orange-500/10 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                      <div className={`flex flex-col gap-2 mb-3 ${idx % 2 === 0 ? 'md:items-end' : 'md:items-start'}`}>
-                        <h3 className="text-2xl font-bold text-white group-hover:text-orange-400 transition-colors">{event.title}</h3>
-                        <span className="text-orange-400 font-semibold flex items-center gap-2 bg-orange-500/10 px-3 py-1 rounded-full w-fit">
-                          <Clock size={16} />
-                          {event.time}
-                        </span>
-                      </div>
-                      <p className="text-gray-400 leading-relaxed">{event.desc}</p>
-                    </div>
-                  </div>
-
-                  {/* Center Dot */}
-                  <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-gray-800 rounded-full border-2 border-orange-500 z-30 md:-translate-x-1/2 group-hover/item:bg-orange-500 group-hover/item:shadow-[0_0_15px_rgba(249,115,22,0.8)] transition-all duration-300"></div>
-
-                  {/* Connecting Line to Next Event */}
-                  {idx < arr.length - 1 && (
-                    <div
-                      className="absolute left-[1.2rem] md:left-1/2 top-1/2 w-0.5 h-[calc(100%+3rem)] opacity-0 group-hover/item:opacity-100 group-hover/item:timeline-glow-animate transition-opacity duration-500 z-10 md:-translate-x-1/2"
-                      style={{
-                        background: 'linear-gradient(180deg, rgba(168, 85, 247, 0) 0%, rgba(168, 85, 247, 0.9) 25%, rgba(217, 70, 239, 0.9) 50%, rgba(168, 85, 247, 0.9) 75%, rgba(168, 85, 247, 0) 100%)',
-                        backgroundSize: '100% 200%',
-                        boxShadow: '0 0 15px rgba(168, 85, 247, 0.8), 0 0 25px rgba(217, 70, 239, 0.6)'
-                      }}
-                    ></div>
-                  )}
-                  {/* Empty Side for Balance */}
-                  <div className="hidden md:block flex-1"></div>
-                </div>
+                <TimelineEvent key={idx} event={event} idx={idx} totalEvents={arr.length} />
               ))}
             </div>
           </div>
