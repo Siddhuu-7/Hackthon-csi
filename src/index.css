@@ -1,1 +1,30 @@
 @import "tailwindcss";
+
+@keyframes timeline-glow {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
+  }
+
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 20px rgba(168, 85, 247, 1)) drop-shadow(0 0 30px rgba(217, 70, 239, 0.8));
+  }
+}
+
+@keyframes timeline-flow {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  100% {
+    background-position: 0% 200%;
+  }
+}
+
+
+.timeline-glow-animate {
+  animation: timeline-glow 1.5s ease-in-out infinite, timeline-flow 2s linear infinite;
+}
