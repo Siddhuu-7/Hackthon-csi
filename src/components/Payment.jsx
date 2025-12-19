@@ -1,11 +1,11 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import { Users, CreditCard, CheckCircle, IndianRupee, ArrowLeft } from "lucide-react";
-
+import axios from "axios"
 export default function PaymentSummary({ formData ,goback}) {
   if (!formData) return null;
-
   const TEAM_LEAD_CSI_PRICE = 750;
   const TEAM_LEAD_NON_CSI_PRICE = 850;
+const [loading, setLoading] = useState(false);
 
   const teamLeadAmount = formData.teamLead.isCsi
     ? TEAM_LEAD_CSI_PRICE
@@ -21,6 +21,38 @@ export default function PaymentSummary({ formData ,goback}) {
     teamMembersWithAmount.reduce((sum, m) => sum + m.amount, 0);
 
   const totalMembers = 1 + teamMembersWithAmount.length;
+const handlePayment = async () => {
+  if (loading) return; // prevent double click
+
+  setLoading(true);
+
+  try {
+    const res = await axios.post(
+      "https://hackthon-backend-jnlm.onrender.com/reg",
+      formData
+    );
+
+    if (res.status === 200 || res.status === 201) {
+      const url = `/payment?name=${encodeURIComponent(
+        formData.teamName
+      )}&amount=${totalAmount}`;
+
+      window.open(url, "_blank");
+    }
+
+    console.log("Backend response:", res.data);
+  } catch (error) {
+    console.error("Registration failed:", error);
+
+    alert(
+      error?.response?.data?.msg || "Registration failed"
+    );
+  } finally {
+    setLoading(false); // always reset
+  }
+};
+
+
 
   return (
     <div className="w-full">
@@ -102,7 +134,7 @@ export default function PaymentSummary({ formData ,goback}) {
               </div>
             </div>
 
-            {/* Team Members */}
+            
             {teamMembersWithAmount.length > 0 && (
               <div className="bg-white rounded-xl shadow-md p-4 md:p-6 border-l-4 border-[#203a43]">
                 <div className="flex items-center gap-3 mb-4">
@@ -151,18 +183,46 @@ export default function PaymentSummary({ formData ,goback}) {
                   </p>
                 </div>
 
-                <button
-                  onClick={() =>
-                    console.log("Proceed to payment", {
-                      formData,
-                      totalAmount,
-                    })
-                  }
-                  className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-xl shadow-lg hover:scale-105 transition"
-                >
-                  <CreditCard size={24} />
-                  Proceed to Payment
-                </button>
+               <button
+  onClick={handlePayment}
+  disabled={loading}
+  className={`flex items-center gap-3 px-8 py-4 text-white font-bold text-lg rounded-xl shadow-lg transition
+    ${loading
+      ? "bg-orange-400 cursor-not-allowed"
+      : "bg-gradient-to-r from-orange-500 to-orange-600 hover:scale-105"
+    }`}
+>
+  {loading ? (
+    <>
+      <svg
+        className="animate-spin h-5 w-5 text-white"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+          fill="none"
+        />
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+        />
+      </svg>
+      Processing...
+    </>
+  ) : (
+    <>
+      <CreditCard size={24} />
+      Proceed to Payment
+    </>
+  )}
+</button>
+
               </div>
             </div>
 

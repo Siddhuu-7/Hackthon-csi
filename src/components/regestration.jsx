@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
-import { X, Users, CheckCircle, Plus, MoveRight, MoveLeft } from 'lucide-react';
+import { X, Users, CheckCircle, Plus, MoveRight, MoveLeft, XCircle } from 'lucide-react';
 import { replace, useNavigate } from 'react-router-dom';
+import axios from "axios"
+import { useEffect } from "react";
 
 export default function Registration({setform,onsubmit}) {
+
+const [teamStatus, setTeamStatus] = useState(null); 
+const [checking, setChecking] = useState(false);
+
+
   const [formData, setFormData] = useState({
+    teamcode:`${ Date.now()}`,
     teamName: '',
     collegeType: 'srkr',
     otherCollege: '',
     teamLead: {
       name: '',
+      gender:"",
       email: '',
       mobile: '',
       department: '',
@@ -16,7 +25,8 @@ export default function Registration({setform,onsubmit}) {
       location: '',
       tshirtSize: '',
       isCsi:null,
-      price:""
+      price:"",
+      transactionId:""
     },
     teamMembers: []
   });
@@ -30,6 +40,7 @@ export default function Registration({setform,onsubmit}) {
           {
             id: Date.now(),
             name: '',
+            gender:"",
             email: '',
             mobile: '',
             department: '',
@@ -63,6 +74,7 @@ export default function Registration({setform,onsubmit}) {
   };
 
   const updateTeamMember = (id, field, value) => {
+    console.log(field,value)
     setFormData({
       ...formData,
       teamMembers: formData.teamMembers.map(member =>
@@ -71,13 +83,58 @@ export default function Registration({setform,onsubmit}) {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setform(formData)
-    onsubmit()
-    console.log('Form Data:', formData);
-  };
+  useEffect(() => {
+  if (!formData.teamName.trim()) {
+    setTeamStatus(null);
+    return;
+  }
 
+  const timer = setTimeout(async () => {
+    try {
+      setChecking(true);
+      const res = await axios.get(
+        `http://localhost:6961/check-team-name?name=${formData.teamName}`
+      );
+      setTeamStatus(res.data.available);
+    } catch (err) {
+      setTeamStatus(null);
+    } finally {
+      setChecking(false);
+    }
+  }, 600); 
+
+  return () => clearTimeout(timer);
+}, [formData.teamName]);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    // const res = await axios.post(
+    //   "http://localhost:6961/reg",
+    //   formData
+    // );
+
+    // console.log("Backend response:", res.data);
+    localStorage.setItem("formdata", JSON.stringify(formData));
+
+    setform(formData);   
+    onsubmit();          
+
+  } catch (error) {
+    console.error("Registration failed:", error);
+    alert(error.response.data.msg);
+  }
+};
+useEffect(() => {
+  const saved = localStorage.getItem("formdata");
+  if (saved) {
+    setFormData(JSON.parse(saved));
+  }
+}, []);
+
+const isCSi=(email,name)=>{
+
+}
   return (
     <div className="w-full">
       <div className="max-w-4xl mx-auto">
@@ -111,17 +168,41 @@ export default function Registration({setform,onsubmit}) {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    Team Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter your team name"
-                    value={formData.teamName}
-                    onChange={(e) => setFormData({ ...formData, teamName: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
-                  />
-                </div>
+  <label className="block text-sm font-semibold mb-2 text-gray-700">
+    Team Name <span className="text-red-500">*</span>
+  </label>
+
+  <input
+    type="text"
+    placeholder="Enter your team name"
+    value={formData.teamName}
+    onChange={(e) =>
+      setFormData({ ...formData, teamName: e.target.value })
+    }
+    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg
+               focus:border-[#203a43] focus:outline-none transition-all
+               duration-300 bg-gray-50 hover:bg-white"
+  />
+
+  {checking && (
+    <p className="text-sm text-gray-500 mt-1">Checking availability...</p>
+  )}
+
+  {!checking && teamStatus === true && (
+   <p className="flex items-center gap-1 text-sm text-green-600 mt-1">
+  <CheckCircle size={16} />
+  <span>Team name is available</span>
+</p>
+
+  )}
+
+  {!checking && teamStatus === false && (
+    <p className=" flex items-center gap-1 text-sm text-red-600 mt-1">
+      <XCircle size={16}/> Team name already taken
+    </p>
+  )}
+</div>
+
 
                 <div className="space-y-3">
                   <label className="block text-sm font-semibold text-gray-700">
@@ -174,7 +255,7 @@ export default function Registration({setform,onsubmit}) {
                 </h2>
                 <span className="ml-auto inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
                 {
-                  formData.teamLead.isCsi?"-/₹750":"-/₹850"
+                 "-/₹850"
                 }
                   </span>
               </div>
@@ -191,6 +272,21 @@ export default function Registration({setform,onsubmit}) {
                     onChange={(e) => updateTeamLead('name', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                   />
+                </div>
+                 <div>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">
+                    gender <span className="text-red-500">*</span>
+                  </label>
+                  <select 
+                    value={formData.teamLead.gender}
+                    onChange={(e) => updateTeamLead('gender', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    
+                  </select>
                 </div>
 
                 <div>
@@ -293,7 +389,7 @@ export default function Registration({setform,onsubmit}) {
                   </select>
                 </div>
                 
-                    <label className="inline-flex items-center cursor-pointer">
+                    {/* <label className="inline-flex items-center cursor-pointer">
                       <input type="checkbox" value={"Yes"} 
                      onChange={(e) => {
                       updateTeamLead("isCsi",e.target.checked);
@@ -319,7 +415,7 @@ export default function Registration({setform,onsubmit}) {
                 ></div>
 
                       <span className="select-none ms-3 text-sm font-medium text-heading">Are You CSi Member?</span>
-                    </label>
+                    </label> */}
 
               </div>
             </div>
@@ -342,11 +438,7 @@ export default function Registration({setform,onsubmit}) {
                   </button>
                  <span className="ml-auto inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
   {
-    formData.teamMembers.some(
-      data => data.id === member.id && data.isCsi
-    )
-      ? "- ₹750"
-      : "- ₹850"
+    "/850"
   }
 </span>
 
@@ -365,7 +457,21 @@ export default function Registration({setform,onsubmit}) {
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                     />
                   </div>
-
+<div>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">
+                    gender <span className="text-red-500">*</span>
+                  </label>
+                  <select 
+                    value={member.gender}
+                    onChange={(e) => updateTeamMember(member.id,'gender', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    
+                  </select>
+                </div>
                   <div>
                     <label className="block text-sm font-semibold mb-2 text-gray-700">
                       Email ID <span className="text-red-500">*</span>
@@ -464,7 +570,7 @@ export default function Registration({setform,onsubmit}) {
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                   />
                 </div>
-                <label className="inline-flex items-center cursor-pointer">
+                {/* <label className="inline-flex items-center cursor-pointer">
                       <input type="checkbox" value={"Yes"} 
                      onChange={(e) => {
                       updateTeamMember(member.id,"isCsi",e.target.checked)
@@ -477,7 +583,7 @@ export default function Registration({setform,onsubmit}) {
                        after:absolute after:top-[2px] after:start-[2px] 
                        after:bg-black after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
                       <span className="select-none ms-3 text-sm font-medium text-heading">Are You CSi Member?</span>
-                    </label>
+                    </label> */}
                   
                 </div>
               </div>

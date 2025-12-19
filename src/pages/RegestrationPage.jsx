@@ -1,10 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Registration from '../components/regestration';
 import PaymentSummary from '../components/Payment';
+import QrPayment from '../components/QrPaymet';
 export default function RegistrationPage() {
   const canvasRef = useRef(null);
   const [formdata,setformData]=useState(null)
   const [back,setBack]=useState(true)
+    useEffect(() => {
+  setformData(prev => ({
+    ...prev,
+    teamcode: `TEAM-${Date.now()}`
+  }));
+}, []);
    const goback=()=>{
       setBack(!back)
     }
