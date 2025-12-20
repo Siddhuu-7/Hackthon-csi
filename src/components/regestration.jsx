@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Users, CheckCircle, Plus, MoveRight, MoveLeft, Loader2, Save, CheckCheck } from 'lucide-react';
 import { replace, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { teamService } from '../lib/appwrite';
+
+// import { teamService } from '../lib/appwrite'; // Removed
 
 export default function Registration({ setform, onsubmit }) {
   const { user } = useAuth();
@@ -35,40 +36,8 @@ export default function Registration({ setform, onsubmit }) {
   useEffect(() => {
     const loadExistingData = async () => {
       if (user) {
-        try {
-          const existingData = await teamService.loadFullTeamData(user.$id);
-          if (existingData) {
-            setTeamId(existingData.teamId);
-            setFormData({
-              teamName: existingData.teamName,
-              collegeType: existingData.collegeType,
-              otherCollege: existingData.otherCollege,
-              teamLead: existingData.teamLead,
-              teamMembers: existingData.teamMembers
-            });
-          } else {
-            // Auto-fill team lead info from authenticated user for new registration
-            setFormData(prev => ({
-              ...prev,
-              teamLead: {
-                ...prev.teamLead,
-                name: user.name || prev.teamLead.name,
-                email: user.email || prev.teamLead.email
-              }
-            }));
-          }
-        } catch (error) {
-          console.error("Error loading team data:", error);
-          // Still auto-fill basic info on error
-          setFormData(prev => ({
-            ...prev,
-            teamLead: {
-              ...prev.teamLead,
-              name: user.name || prev.teamLead.name,
-              email: user.email || prev.teamLead.email
-            }
-          }));
-        } finally {
+        if (user) {
+          // Mock data loading or just do nothing
           setLoading(false);
         }
       }
@@ -81,16 +50,12 @@ export default function Registration({ setform, onsubmit }) {
     if (!user || !formData.teamName || !formData.teamLead.name) return;
 
     setSaveStatus('saving');
-    try {
-      const savedTeam = await teamService.saveTeam(user.$id, formData);
-      setTeamId(savedTeam.$id);
+    setSaveStatus('saving');
+    // Mock save
+    setTimeout(() => {
       setSaveStatus('saved');
       setTimeout(() => setSaveStatus(null), 2000);
-    } catch (error) {
-      console.error("Auto-save error:", error);
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus(null), 3000);
-    }
+    }, 500);
   };
 
   // Debounced auto-save on form changes
@@ -131,12 +96,9 @@ export default function Registration({ setform, onsubmit }) {
     const member = formData.teamMembers.find(m => m.id === id);
 
     // If member has a database ID, delete from database
+    // Mock delete
     if (member?.dbId) {
-      try {
-        await teamService.deleteTeamMember(member.dbId);
-      } catch (error) {
-        console.error("Error deleting member from database:", error);
-      }
+      console.log("Mock delete member", member.dbId);
     }
 
     setFormData({
@@ -150,15 +112,9 @@ export default function Registration({ setform, onsubmit }) {
     if (!teamId || !member.name || !member.email) return;
 
     try {
-      const savedMember = await teamService.saveTeamMember(teamId, member, member.dbId);
-
-      // Update the member with database ID
-      setFormData(prev => ({
-        ...prev,
-        teamMembers: prev.teamMembers.map(m =>
-          m.id === member.id ? { ...m, dbId: savedMember.$id } : m
-        )
-      }));
+      // Mock save member
+      // const savedMember = await teamService.saveTeamMember(teamId, member, member.dbId);
+      console.log("Mock save member", member);
     } catch (error) {
       console.error("Error saving team member:", error);
     }
@@ -197,17 +153,9 @@ export default function Registration({ setform, onsubmit }) {
     setSaving(true);
 
     try {
-      // Save the team first
-      const savedTeam = await teamService.saveTeam(user.$id, formData);
-      const currentTeamId = savedTeam.$id;
-      setTeamId(currentTeamId);
-
-      // Save all team members
-      for (const member of formData.teamMembers) {
-        if (member.name && member.email) {
-          await teamService.saveTeamMember(currentTeamId, member, member.dbId);
-        }
-      }
+      // Mock submit
+      // const savedTeam = await teamService.saveTeam(user.$id, formData);
+      console.log("Mock submit form", formData);
 
       setform(formData);
       onsubmit();
@@ -252,8 +200,8 @@ export default function Registration({ setform, onsubmit }) {
               {/* Save status indicator */}
               {saveStatus && (
                 <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${saveStatus === 'saving' ? 'bg-blue-100 text-blue-700' :
-                    saveStatus === 'saved' ? 'bg-green-100 text-green-700' :
-                      'bg-red-100 text-red-700'
+                  saveStatus === 'saved' ? 'bg-green-100 text-green-700' :
+                    'bg-red-100 text-red-700'
                   }`}>
                   {saveStatus === 'saving' && <Loader2 className="w-4 h-4 animate-spin" />}
                   {saveStatus === 'saved' && <CheckCheck className="w-4 h-4" />}

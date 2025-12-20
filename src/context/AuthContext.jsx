@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authService } from '../lib/appwrite';
 
 const AuthContext = createContext(null);
 
@@ -13,54 +12,22 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // Check for existing session on mount
-  useEffect(() => {
-    checkUser();
-  }, []);
-
-  const checkUser = async () => {
-    try {
-      const currentUser = await authService.getCurrentUser();
-      setUser(currentUser);
-    } catch (error) {
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // No-op functions since Appwrite is removed
   const login = async (email, password) => {
-    try {
-      await authService.login(email, password);
-      const currentUser = await authService.getCurrentUser();
-      setUser(currentUser);
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
+    console.log("Login disabled (backend removed)");
+    return { success: false, error: "Backend removed" };
   };
 
   const signup = async (email, password, name) => {
-    try {
-      await authService.createAccount(email, password, name);
-      const currentUser = await authService.getCurrentUser();
-      setUser(currentUser);
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
+    console.log("Signup disabled (backend removed)");
+    return { success: false, error: "Backend removed" };
   };
 
   const logout = async () => {
-    try {
-      await authService.logout();
-      setUser(null);
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
+    setUser(null);
+    return { success: true };
   };
 
   const value = {
@@ -69,7 +36,7 @@ export const AuthProvider = ({ children }) => {
     login,
     signup,
     logout,
-    isAuthenticated: !!user,
+    isAuthenticated: false,
   };
 
   return (
