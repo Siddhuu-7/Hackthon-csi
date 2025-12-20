@@ -1,72 +1,134 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Users, FileText, Calendar, Award, Target, Zap, Trophy, Clock, MapPin, Mail, Phone, LogIn, LogOut, User } from 'lucide-react';
+import { ArrowRight, Users, FileText, Calendar, Award, Target, Zap, Trophy, Clock, MapPin, Mail, Phone, LogIn, LogOut, User, Image as Image1 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Image from '../assets/image.jpg';
 import { useAuth } from '../context/AuthContext';
+import { Timeline } from "@/components/ui/timeline";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
+import { FloatingNav } from "@/components/ui/floating-navbar";
 
 // Timeline Event Component with individual scroll tracking
-function TimelineEvent({ event, idx, totalEvents }) {
-  const eventRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.3 } // Trigger when 30% of event is visible
-    );
 
-    if (eventRef.current) {
-      observer.observe(eventRef.current);
-    }
-
-    return () => {
-      if (eventRef.current) {
-        observer.unobserve(eventRef.current);
-      }
-    };
-  }, []);
+// Previous Events Section Component
+function PreviousEvents() {
+  const boxRef = useRef(null);
 
   return (
-    <div
-      ref={eventRef}
-      className={`relative flex flex-col md:flex-row gap-8 items-center group/item transition-all duration-700 ease-out ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''} ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-    >
-      {/* Content Side */}
-      <div className="flex-1 w-full md:w-1/2 pl-12 md:pl-0 z-20">
-        <div className={`bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/10 hover:border-orange-500/50 transition-all duration-300 group hover:shadow-xl hover:shadow-orange-500/10 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-          <div className={`flex flex-col gap-2 mb-3 ${idx % 2 === 0 ? 'md:items-end' : 'md:items-start'}`}>
-            <h3 className="text-2xl font-bold text-white group-hover:text-orange-400 transition-colors">{event.title}</h3>
-            <span className="text-orange-400 font-semibold flex items-center gap-2 bg-orange-500/10 px-3 py-1 rounded-full w-fit">
-              <Clock size={16} />
-              {event.time}
-            </span>
+    <section id="previous-events" className="relative py-20 px-4 md:px-8 bg-transparent border-t border-white/10">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Previous Events</h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
+        </div>
+
+        {/* DevOps Flowthon Feature */}
+        <div ref={boxRef} className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 mb-20 hover:border-orange-500/30 transition-all duration-300 h-[500px] overflow-y-auto scroll-smooth">
+          <div className="grid md:grid-cols-2 gap-12 items-center p-8">
+            <div className="order-2 md:order-1 space-y-6">
+              <div className="inline-block px-4 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm font-semibold border border-orange-500/30">
+                Hackathon 2024
+              </div>
+              <h3 className="text-3xl md:text-4xl font-bold text-white">DEVOPS-FLOWTHON</h3>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                A groundbreaking 24-hour devops hackathon that brought together over 300 brilliant minds to revolutionize continuous integration and deployment workflows. Participants built cutting-edge automated pipelines and cloud-native solutions that pushed the boundaries of modern DevOps practices.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2 text-gray-400 bg-white/5 px-4 py-2 rounded-lg">
+                  <Users size={18} className="text-orange-500" />
+                  <span>300+ Participants</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 bg-white/5 px-4 py-2 rounded-lg">
+                  <Trophy size={18} className="text-orange-500" />
+                  <span>50+ Projects</span>
+                </div>
+              </div>
+            </div>
+            <div className="order-1 md:order-2 relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+              <div className="relative h-[300px] w-full bg-gray-800 rounded-2xl border border-white/10 overflow-hidden group-hover:transform group-hover:scale-[1.02] transition-all duration-300">
+                {/* Placeholder for Demo Picture */}
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-gray-500">
+                  <div className="text-center p-6">
+                    <div className="bg-white/5 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                      <Image1 className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <p className="text-sm font-medium">Event Highlight Image</p>
+                    <p className="text-xs opacity-60 mt-1">1920x1080 Recommended</p>
+                  </div>
+                </div>
+                {/* User should replace this img src with their own */}
+                {/* <img src="/path/to/event-image.jpg" alt="DevOps Flowthon" className="absolute inset-0 w-full h-full object-cover" /> */}
+              </div>
+            </div>
           </div>
-          <p className="text-gray-400 leading-relaxed">{event.desc}</p>
+
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12"></div>
+
+          {/* Winners Section */}
+          <div className="mb-20">
+            <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+              <Trophy className="text-yellow-500" size={24} />
+              <span>2024 Winners</span>
+            </h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { place: '1st', team: 'CloudNinjas', college: 'IIT Bombay', members: ['Arjun K.', 'Priya S.', 'Rahul M.'], color: 'border-yellow-500/50 bg-yellow-500/5' },
+                { place: '2nd', team: 'AutoMaters', college: 'NIT Trichy', members: ['Sarah J.', 'Mike R.', 'David L.'], color: 'border-gray-400/50 bg-gray-400/5' },
+                { place: '3rd', team: 'PipelinePro', college: 'BITS Pilani', members: ['Neha G.', 'Varun P.', 'Amit K.'], color: 'border-orange-600/50 bg-orange-600/5' }
+              ].map((winner, idx) => (
+                <div key={idx} className={`relative bg-black/20 rounded-xl p-6 border ${winner.color} hover:-translate-y-1 transition-transform duration-300`}>
+                  <div className="absolute -top-3 -right-3 w-10 h-10 bg-gray-900 rounded-full border border-white/20 flex items-center justify-center text-lg font-bold text-white shadow-xl">
+                    {winner.place}
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-1">{winner.team}</h4>
+                  <p className="text-gray-400 text-xs mb-3">{winner.college}</p>
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Team Members</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {winner.members.map((member, mIdx) => (
+                        <span key={mIdx} className="text-xs text-gray-300 bg-white/5 px-2 py-1 rounded">
+                          {member}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12"></div>
+
+          {/* Gallery Section - Card Stack Animation */}
+          <GallerySection scrollContainerRef={boxRef} />
         </div>
       </div>
+    </section>
+  );
+}
 
-      {/* Center Dot */}
-      <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-gray-800 rounded-full border-2 border-orange-500 z-30 md:-translate-x-1/2 group-hover/item:bg-orange-500 group-hover/item:shadow-[0_0_15px_rgba(249,115,22,0.8)] transition-all duration-300"></div>
+// Gallery Component with Infinite Scroll
+function GallerySection() {
+  const galleryImages = [
+    { src: Image, caption: "Hackathon 2024 Highlight" },
+    { src: Image, caption: "Team Collaboration" },
+    { src: Image, caption: "Coding Session" },
+    { src: Image, caption: "Mentorship Round" },
+    { src: Image, caption: "Prize Distribution" },
+  ];
 
-      {/* Connecting Line to Next Event */}
-      {idx < totalEvents - 1 && (
-        <div
-          className="absolute left-[1.2rem] md:left-1/2 top-1/2 w-0.5 h-[calc(100%+3rem)] opacity-0 group-hover/item:opacity-100 group-hover/item:timeline-glow-animate transition-opacity duration-500 z-10 md:-translate-x-1/2"
-          style={{
-            background: 'linear-gradient(180deg, rgba(168, 85, 247, 0) 0%, rgba(168, 85, 247, 0.9) 25%, rgba(217, 70, 239, 0.9) 50%, rgba(168, 85, 247, 0.9) 75%, rgba(168, 85, 247, 0) 100%)',
-            backgroundSize: '100% 200%',
-            boxShadow: '0 0 15px rgba(168, 85, 247, 0.8), 0 0 25px rgba(217, 70, 239, 0.6)'
-          }}
-        ></div>
-      )}
-
-      {/* Empty Side for Balance */}
-      <div className="hidden md:block flex-1"></div>
+  return (
+    <div className="relative mt-20 flex flex-col items-center justify-center overflow-hidden rounded-md pb-20">
+      <h3 className="text-3xl md:text-5xl font-bold text-white mb-12 text-center">
+        Event Gallery
+      </h3>
+      <InfiniteMovingCards
+        items={galleryImages}
+        direction="right"
+        speed="slow"
+      />
     </div>
   );
 }
@@ -190,7 +252,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`relative overflow-hidden bg-gray-900 transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`relative overflow-hidden bg-transparent transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
       <div className="fixed top-0 left-0 w-full h-full -z-10">
         <div
           className="absolute top-0 left-0 w-full h-full"
@@ -206,68 +268,51 @@ export default function Home() {
         />
       </div>
 
-      <nav className="relative z-50 bg-black/30 backdrop-blur-md border-b border-white/10 sticky top-0">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-                <Zap className="text-white" size={24} />
-              </div>
-              <span className="text-white font-bold text-xl">VIDBHAV 2025</span>
-            </div>
-
-            <div className="hidden md:flex items-center gap-6">
-              <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
-              <a href="#timeline" className="text-gray-300 hover:text-white transition-colors">Timeline</a>
-              <a href="#prizes" className="text-gray-300 hover:text-white transition-colors">Prizes</a>
-              <a href="#faq" className="text-gray-300 hover:text-white transition-colors">FAQ</a>
-            </div>
-
-            <div className="flex items-center gap-3">
-              {isAuthenticated ? (
-                <>
-                  <div className="hidden sm:flex items-center gap-2 text-gray-300">
-                    <User size={18} />
-                    <span className="text-sm">{user?.name || user?.email}</span>
-                  </div>
-                  <button
-                    onClick={() => handleNavigation('/registration')}
-                    className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg hover:brightness-110 transition-all"
-                  >
-                    Register Team
-                  </button>
-                  <button
-                    onClick={async () => {
-                      await logout();
-                      navigate('/');
-                    }}
-                    className="px-4 py-2 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all flex items-center gap-2"
-                  >
-                    <LogOut size={18} />
-                    <span className="hidden sm:inline">Logout</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => handleNavigation('/auth')}
-                    className="px-4 py-2 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all flex items-center gap-2"
-                  >
-                    <LogIn size={18} />
-                    <span>Login</span>
-                  </button>
-                  <button
-                    onClick={() => handleNavigation('/registration')}
-                    className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg hover:brightness-110 transition-all"
-                  >
-                    Register
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
+      <FloatingNav
+        navItems={[
+          { name: 'About', link: '#about', icon: <FileText size={18} /> },
+          { name: 'Timeline', link: '#timeline', icon: <Clock size={18} /> },
+          { name: 'Prizes', link: '#prizes', icon: <Trophy size={18} /> },
+          { name: 'FAQ', link: '#faq', icon: <Target size={18} /> }
+        ]}
+        actionButtons={
+          isAuthenticated ? (
+            <>
+              <button
+                onClick={() => handleNavigation('/registration')}
+                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-full text-xs hover:brightness-110 transition-all"
+              >
+                Register
+              </button>
+              <button
+                onClick={async () => {
+                  await logout();
+                  navigate('/');
+                }}
+                className="bg-white/10 text-white p-2 rounded-full hover:bg-white/20 transition-all"
+                title="Logout"
+              >
+                <LogOut size={16} />
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => handleNavigation('/auth')}
+                className="px-4 py-2 text-white font-medium hover:text-orange-400 transition-colors text-sm"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => handleNavigation('/registration')}
+                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-full text-xs hover:brightness-110 transition-all"
+              >
+                Register
+              </button>
+            </>
+          )
+        }
+      />
 
       <section className="relative min-h-screen flex items-center justify-center px-4 md:px-8 pt-20">
         <div
@@ -312,22 +357,22 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+            <HoverBorderGradient as="div" containerClassName="rounded-xl" className="bg-gray-900/50 flex flex-col items-center justify-center p-4 w-full h-full">
               <div className="text-3xl font-bold text-white mb-1">500+</div>
               <div className="text-sm text-gray-400">Participants</div>
-            </div>
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+            </HoverBorderGradient>
+            <HoverBorderGradient as="div" containerClassName="rounded-xl" className="bg-gray-900/50 flex flex-col items-center justify-center p-4 w-full h-full">
               <div className="text-3xl font-bold text-white mb-1">₹50K</div>
               <div className="text-sm text-gray-400">Prize Pool</div>
-            </div>
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+            </HoverBorderGradient>
+            <HoverBorderGradient as="div" containerClassName="rounded-xl" className="bg-gray-900/50 flex flex-col items-center justify-center p-4 w-full h-full">
               <div className="text-3xl font-bold text-white mb-1">24hrs</div>
               <div className="text-sm text-gray-400">Duration</div>
-            </div>
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+            </HoverBorderGradient>
+            <HoverBorderGradient as="div" containerClassName="rounded-xl" className="bg-gray-900/50 flex flex-col items-center justify-center p-4 w-full h-full">
               <div className="text-3xl font-bold text-white mb-1">10+</div>
               <div className="text-sm text-gray-400">Problems</div>
-            </div>
+            </HoverBorderGradient>
           </div>
         </div>
       </section>
@@ -369,58 +414,140 @@ export default function Home() {
             </div>
 
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 h-full">
               {[
                 { icon: <Calendar />, title: 'Event Date', desc: 'January 23-24, 2025' },
                 { icon: <MapPin />, title: 'Venue', desc: 'SRKR Engineering College' },
                 { icon: <Users />, title: 'Team Size', desc: '4-6 Members per Team' },
                 { icon: <Trophy />, title: 'Registration', desc: '₹850 per member' }
               ].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-4 bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/10 hover:border-orange-500/50 hover:scale-105 transition-all duration-300 cursor-default group">
-                  <div className="p-3 bg-orange-500/10 rounded-lg text-orange-500 group-hover:text-white group-hover:bg-orange-500 transition-colors">
+                <HoverBorderGradient key={idx} as="div" containerClassName="rounded-xl h-full w-full" className="flex flex-row items-center gap-4 bg-gray-900/50 p-4 w-full h-full cursor-default group text-left justify-start">
+                  <div className="p-3 bg-orange-500/10 rounded-lg text-orange-500 group-hover:text-white group-hover:bg-orange-500 transition-colors shrink-0">
                     {item.icon}
                   </div>
                   <div>
                     <div className="text-white font-semibold text-lg">{item.title}</div>
                     <div className="text-gray-400 text-sm">{item.desc}</div>
                   </div>
+                </HoverBorderGradient>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="timeline" className="relative py-20 px-4 md:px-8 bg-transparent overflow-hidden">
+        <Timeline
+          data={[
+            {
+              title: "08:30 AM",
+              content: (
+                <div className="space-y-4">
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Registration & Breakfast
+                  </p>
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Team check-in and networking
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
+              ),
+            },
+            {
+              title: "09:00 AM",
+              content: (
+                <div className="space-y-4">
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Opening Ceremony
+                  </p>
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Welcome address and problem statement reveal
+                  </p>
+                </div>
+              ),
+            },
+            {
+              title: "09:30 AM",
+              content: (
+                <div className="space-y-4">
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Hacking Begins
+                  </p>
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    24 hours of non-stop innovation
+                  </p>
+                </div>
+              ),
+            },
+            {
+              title: "12:30 PM",
+              content: (
+                <div className="space-y-4">
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Lunch Break
+                  </p>
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Refresh and recharge
+                  </p>
+                </div>
+              ),
+            },
+            {
+              title: "08:00 PM",
+              content: (
+                <div className="space-y-4">
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Dinner & Checkpoint
+                  </p>
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Progress review with mentors
+                  </p>
+                </div>
+              ),
+            },
+            {
+              title: "11:00 AM",
+              content: (
+                <div className="space-y-4">
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Submission Deadline
+                  </p>
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Final submissions close
+                  </p>
+                </div>
+              ),
+            },
+            {
+              title: "02:00 PM",
+              content: (
+                <div className="space-y-4">
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Presentations
+                  </p>
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Teams pitch their solutions
+                  </p>
+                </div>
+              ),
+            },
+            {
+              title: "05:00 PM",
+              content: (
+                <div className="space-y-4">
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Award Ceremony
+                  </p>
+                  <p className="text-gray-200 text-xs md:text-sm font-normal">
+                    Winners announced!
+                  </p>
+                </div>
+              ),
+            },
+          ]}
+        />
       </section>
 
-      <section id="timeline" className="relative py-20 px-4 md:px-8 bg-black/20 overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Event Timeline</h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
-          </div>
 
-          <div className="relative">
-            {/* Continuous Vertical Line */}
-            {/* MAIN CONTINUOUS VERTICAL LINE */}
-            <div className="absolute left-[1.2rem] md:left-1/2 top-0 bottom-0 w-0.5 bg-white/20 md:-translate-x-1/2 z-0"></div>
-
-
-            <div className="space-y-12">
-              {[
-                { time: '08:30 AM', title: 'Registration & Breakfast', desc: 'Team check-in and networking' },
-                { time: '09:00 AM', title: 'Opening Ceremony', desc: 'Welcome address and problem statement reveal' },
-                { time: '09:30 AM', title: 'Hacking Begins', desc: '24 hours of non-stop innovation' },
-                { time: '12:30 PM', title: 'Lunch Break', desc: 'Refresh and recharge' },
-                { time: '08:00 PM', title: 'Dinner & Checkpoint', desc: 'Progress review with mentors' },
-                { time: '11:00 AM', title: 'Submission Deadline', desc: 'Final submissions close' },
-                { time: '02:00 PM', title: 'Presentations', desc: 'Teams pitch their solutions' },
-                { time: '05:00 PM', title: 'Award Ceremony', desc: 'Winners announced!' }
-              ].map((event, idx, arr) => (
-                <TimelineEvent key={idx} event={event} idx={idx} totalEvents={arr.length} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section id="prizes" className="relative py-20 px-4 md:px-8">
         <div className="max-w-6xl mx-auto">
@@ -435,9 +562,8 @@ export default function Home() {
               { place: '2nd Place', prize: '₹10,000', icon: '🥈', color: 'from-gray-300 to-gray-500', shadow: 'shadow-gray-500/20' },
               { place: '3rd Place', prize: '₹5,000', icon: '🥉', color: 'from-orange-500 to-orange-700', shadow: 'shadow-orange-500/20' }
             ].map((prize, idx) => (
-              <div key={idx} className="relative group perspective-1000">
-                <div className={`absolute inset-0 bg-gradient-to-r ${prize.color} rounded-2xl blur-2xl opacity-20 group-hover:opacity-60 transition-opacity duration-500`}></div>
-                <div className={`relative h-full bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/10 text-center transition-all duration-500 transform group-hover:-translate-y-2 group-hover:scale-105 group-hover:border-white/20 ${prize.shadow} hover:shadow-2xl`}>
+              <div key={idx} className="relative group perspective-1000 h-full">
+                <HoverBorderGradient as="div" containerClassName="rounded-2xl h-full" className={`relative h-full bg-gray-900/60 backdrop-blur-xl rounded-2xl p-8 border border-white/10 text-center transition-all duration-500 transform group-hover:-translate-y-2 group-hover:scale-105 group-hover:border-white/20 group-hover:bg-white/5 ${prize.shadow} hover:shadow-2xl flex flex-col items-center w-full justify-center gap-6`}>
                   <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">{prize.icon}</div>
                   <h3 className="text-3xl font-bold text-white mb-2">{prize.place}</h3>
                   <div className={`text-4xl font-bold bg-gradient-to-r ${prize.color} bg-clip-text text-transparent mb-6`}>
@@ -446,21 +572,23 @@ export default function Home() {
                   <div className="py-3 px-4 bg-white/5 rounded-xl border border-white/5 group-hover:bg-white/10 transition-colors">
                     <p className="text-gray-300 text-sm font-medium">+ Certificates & Goodies</p>
                   </div>
-                </div>
+                </HoverBorderGradient>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* NEW SECTION: Previous Events & Gallery */}
+      <PreviousEvents className="h-[500px]" />
+
       <section className="relative py-20 px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur-2xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-            <div className="relative bg-gradient-to-r from-purple-900 to-pink-900 rounded-3xl p-12 text-center border border-white/10 overflow-hidden">
+            <HoverBorderGradient as="div" containerClassName="rounded-3xl mx-auto w-full" className="relative bg-gradient-to-r from-purple-900 to-pink-900 rounded-3xl p-12 text-center overflow-hidden w-full h-full">
               <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
 
-              <div className="relative z-10">
+              <div className="relative z-10 flex flex-col items-center">
                 <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
                   Ready to Innovate?
                 </h2>
@@ -476,7 +604,7 @@ export default function Home() {
                   <ArrowRight size={24} />
                 </button>
               </div>
-            </div>
+            </HoverBorderGradient>
           </div>
         </div>
       </section>
