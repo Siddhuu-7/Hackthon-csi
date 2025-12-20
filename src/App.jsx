@@ -13,17 +13,17 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route element={<Homepage/>} path='/'/>
-          <Route element={<AuthPage/>} path='/auth'/>
-          <Route 
+          <Route element={<Homepage />} path='/' />
+          <Route element={<AuthPage />} path='/auth' />
+          <Route
             element={
               <ProtectedRoute>
-                <Regestration/>
+                <Regestration />
               </ProtectedRoute>
-            } 
+            }
             path='/registration'
           />
-          <Route element={<ProblemStatement/>} path='/statement'/>
+          <Route element={<ProblemStatement />} path='/statement' />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

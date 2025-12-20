@@ -7,8 +7,8 @@ import { LogOut, User, Zap } from 'lucide-react';
 
 export default function RegistrationPage() {
   const canvasRef = useRef(null);
-  const [formdata,setformData]=useState(null)
-  const [back,setBack]=useState(true)
+  const [formdata, setformData] = useState(null)
+  const [back, setBack] = useState(true)
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -17,27 +17,27 @@ export default function RegistrationPage() {
     navigate('/');
   };
 
-   const goback=()=>{
-      setBack(!back)
-    }
-    const goToPayment=()=>{
-      setBack(!back)
-    }
+  const goback = () => {
+    setBack(!back)
+  }
+  const goToPayment = () => {
+    setBack(!back)
+  }
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     let animationFrameId;
-    
+
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-   
+
     const particles = [];
-    const particleCount = 60; 
-    const maxDistance = 150; 
+    const particleCount = 60;
+    const maxDistance = 150;
 
     class Particle {
       constructor() {
@@ -47,9 +47,9 @@ export default function RegistrationPage() {
         this.speedX = (Math.random() - 0.5) * 0.4;
         this.speedY = (Math.random() - 0.5) * 0.4;
         this.opacity = Math.random() * 0.5 + 0.3;
-        
+
         const leftSide = this.x < canvas.width / 2;
-        
+
         if (leftSide) {
           this.color = { r: 80, g: 150, b: 255 }; // Blue
         } else {
@@ -63,7 +63,7 @@ export default function RegistrationPage() {
 
         if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
         if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-        
+
         this.x = Math.max(0, Math.min(canvas.width, this.x));
         this.y = Math.max(0, Math.min(canvas.height, this.y));
       }
@@ -83,17 +83,17 @@ export default function RegistrationPage() {
     const drawConnections = () => {
       for (let i = 0; i < particles.length; i++) {
         const checkLimit = Math.min(i + 15, particles.length);
-        
+
         for (let j = i + 1; j < checkLimit; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const distance = dx * dx + dy * dy; 
+          const distance = dx * dx + dy * dy;
           const maxDistSq = maxDistance * maxDistance;
 
           if (distance < maxDistSq) {
             const actualDist = Math.sqrt(distance);
             const opacity = (1 - actualDist / maxDistance) * 0.3;
-            
+
             const avgColor = {
               r: (particles[i].color.r + particles[j].color.r) / 2,
               g: (particles[i].color.g + particles[j].color.g) / 2,
@@ -113,8 +113,8 @@ export default function RegistrationPage() {
 
     const drawTriangles = () => {
       let triangleCount = 0;
-      const maxTriangles = 50; 
-      
+      const maxTriangles = 50;
+
       for (let i = 0; i < particles.length && triangleCount < maxTriangles; i++) {
         for (let j = i + 1; j < Math.min(i + 10, particles.length) && triangleCount < maxTriangles; j++) {
           for (let k = j + 1; k < Math.min(j + 5, particles.length) && triangleCount < maxTriangles; k++) {
@@ -140,7 +140,7 @@ export default function RegistrationPage() {
               ctx.closePath();
               ctx.fillStyle = `rgba(${avgColor.r}, ${avgColor.g}, ${avgColor.b}, ${opacity})`;
               ctx.fill();
-              
+
               triangleCount++;
             }
           }
@@ -150,10 +150,10 @@ export default function RegistrationPage() {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       drawTriangles();
       drawConnections();
-      
+
       particles.forEach(particle => {
         particle.update();
         particle.draw();
@@ -172,20 +172,20 @@ export default function RegistrationPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      <div 
+      <div
         className="absolute top-0 left-0 w-full h-full"
         style={{
           background: 'linear-gradient(135deg, #0a1128 0%, #1a0a2e 25%, #2d1b4e 50%, #3d1e5c 75%, #4a1942 100%)'
         }}
       />
-      
+
       <canvas
         ref={canvasRef}
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
         style={{ mixBlendMode: 'screen' }}
       />
-      
-      <div 
+
+      <div
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
         style={{
           background: 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%)'
@@ -202,7 +202,7 @@ export default function RegistrationPage() {
               </div>
               <span className="text-white font-bold text-xl">InnoHack 2025</span>
             </div>
-            
+
             <div className="flex items-center gap-4">
               {user && (
                 <div className="flex items-center gap-2 text-gray-300">
@@ -221,13 +221,13 @@ export default function RegistrationPage() {
           </div>
         </div>
       </div>
-      
+
       <div className="relative z-10 p-4 md:p-8">
         <div className="max-w-5xl mx-auto">
-           {
-            formdata!==null&&!back?<PaymentSummary formData={formdata} goback={goback} />
-:<Registration setform={setformData} onsubmit={goToPayment}/>
-           }
+          {
+            formdata !== null && !back ? <PaymentSummary formData={formdata} goback={goback} />
+              : <Registration setform={setformData} onsubmit={goToPayment} />
+          }
         </div>
       </div>
     </div>

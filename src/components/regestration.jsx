@@ -4,26 +4,29 @@ import { replace, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { teamService } from '../lib/appwrite';
 
-export default function Registration({setform,onsubmit}) {
+export default function Registration({ setform, onsubmit }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // 'saving', 'saved', 'error'
   const [teamId, setTeamId] = useState(null);
   const [formData, setFormData] = useState({
+    teamcode: `${Date.now()}`,
     teamName: '',
     collegeType: 'srkr',
     otherCollege: '',
     teamLead: {
       name: '',
+      gender: "",
       email: '',
       mobile: '',
       department: '',
       year: '1st Year',
       location: '',
       tshirtSize: '',
-      isCsi:null,
-      price:""
+      isCsi: null,
+      price: "",
+      transactionId: ""
     },
     teamMembers: []
   });
@@ -76,7 +79,7 @@ export default function Registration({setform,onsubmit}) {
   // Auto-save function
   const autoSave = async () => {
     if (!user || !formData.teamName || !formData.teamLead.name) return;
-    
+
     setSaveStatus('saving');
     try {
       const savedTeam = await teamService.saveTeam(user.$id, formData);
@@ -111,22 +114,22 @@ export default function Registration({setform,onsubmit}) {
         department: '',
         year: '1st Year',
         tshirtSize: '',
-        location:'',
-        isCsi:null,
-        price:""
+        location: '',
+        isCsi: null,
+        price: ""
       };
-      
+
       setFormData({
         ...formData,
         teamMembers: [...formData.teamMembers, newMember]
       });
     }
   };
-  const navigate=useNavigate()
-  
+  const navigate = useNavigate()
+
   const deleteTeamMember = async (id) => {
     const member = formData.teamMembers.find(m => m.id === id);
-    
+
     // If member has a database ID, delete from database
     if (member?.dbId) {
       try {
@@ -135,7 +138,7 @@ export default function Registration({setform,onsubmit}) {
         console.error("Error deleting member from database:", error);
       }
     }
-    
+
     setFormData({
       ...formData,
       teamMembers: formData.teamMembers.filter(member => member.id !== id)
@@ -145,14 +148,14 @@ export default function Registration({setform,onsubmit}) {
   // Save team member to database
   const saveTeamMember = async (member) => {
     if (!teamId || !member.name || !member.email) return;
-    
+
     try {
       const savedMember = await teamService.saveTeamMember(teamId, member, member.dbId);
-      
+
       // Update the member with database ID
       setFormData(prev => ({
         ...prev,
-        teamMembers: prev.teamMembers.map(m => 
+        teamMembers: prev.teamMembers.map(m =>
           m.id === member.id ? { ...m, dbId: savedMember.$id } : m
         )
       }));
@@ -175,7 +178,7 @@ export default function Registration({setform,onsubmit}) {
     const updatedMembers = formData.teamMembers.map(member =>
       member.id === id ? { ...member, [field]: value } : member
     );
-    
+
     setFormData({
       ...formData,
       teamMembers: updatedMembers
@@ -192,20 +195,20 @@ export default function Registration({setform,onsubmit}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    
+
     try {
       // Save the team first
       const savedTeam = await teamService.saveTeam(user.$id, formData);
       const currentTeamId = savedTeam.$id;
       setTeamId(currentTeamId);
-      
+
       // Save all team members
       for (const member of formData.teamMembers) {
         if (member.name && member.email) {
           await teamService.saveTeamMember(currentTeamId, member, member.dbId);
         }
       }
-      
+
       setform(formData);
       onsubmit();
     } catch (error) {
@@ -227,6 +230,9 @@ export default function Registration({setform,onsubmit}) {
     );
   }
 
+  const isCSi = (email, name) => {
+
+  }
   return (
     <div className="w-full">
       <div className="max-w-4xl mx-auto">
@@ -242,14 +248,13 @@ export default function Registration({setform,onsubmit}) {
                 </button>
                 Team Registration
               </h1>
-              
+
               {/* Save status indicator */}
               {saveStatus && (
-                <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
-                  saveStatus === 'saving' ? 'bg-blue-100 text-blue-700' :
-                  saveStatus === 'saved' ? 'bg-green-100 text-green-700' :
-                  'bg-red-100 text-red-700'
-                }`}>
+                <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${saveStatus === 'saving' ? 'bg-blue-100 text-blue-700' :
+                    saveStatus === 'saved' ? 'bg-green-100 text-green-700' :
+                      'bg-red-100 text-red-700'
+                  }`}>
                   {saveStatus === 'saving' && <Loader2 className="w-4 h-4 animate-spin" />}
                   {saveStatus === 'saved' && <CheckCheck className="w-4 h-4" />}
                   {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : 'Save failed'}
@@ -277,14 +282,38 @@ export default function Registration({setform,onsubmit}) {
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
                     Team Name <span className="text-red-500">*</span>
                   </label>
+
                   <input
                     type="text"
                     placeholder="Enter your team name"
                     value={formData.teamName}
-                    onChange={(e) => setFormData({ ...formData, teamName: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
+                    onChange={(e) =>
+                      setFormData({ ...formData, teamName: e.target.value })
+                    }
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg
+               focus:border-[#203a43] focus:outline-none transition-all
+               duration-300 bg-gray-50 hover:bg-white"
                   />
+
+                  {checking && (
+                    <p className="text-sm text-gray-500 mt-1">Checking availability...</p>
+                  )}
+
+                  {!checking && teamStatus === true && (
+                    <p className="flex items-center gap-1 text-sm text-green-600 mt-1">
+                      <CheckCircle size={16} />
+                      <span>Team name is available</span>
+                    </p>
+
+                  )}
+
+                  {!checking && teamStatus === false && (
+                    <p className=" flex items-center gap-1 text-sm text-red-600 mt-1">
+                      <XCircle size={16} /> Team name already taken
+                    </p>
+                  )}
                 </div>
+
 
                 <div className="space-y-3">
                   <label className="block text-sm font-semibold text-gray-700">
@@ -336,10 +365,10 @@ export default function Registration({setform,onsubmit}) {
                   Team Lead
                 </h2>
                 <span className="ml-auto inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
-                {
-                  formData.teamLead.isCsi?"-/₹750":"-/₹850"
-                }
-                  </span>
+                  {
+                    "-/₹850"
+                  }
+                </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
@@ -354,6 +383,21 @@ export default function Registration({setform,onsubmit}) {
                     onChange={(e) => updateTeamLead('name', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">
+                    gender <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={formData.teamLead.gender}
+                    onChange={(e) => updateTeamLead('gender', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+
+                  </select>
                 </div>
 
                 <div>
@@ -386,7 +430,7 @@ export default function Registration({setform,onsubmit}) {
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
                     Department <span className="text-red-500">*</span>
                   </label>
-                  <select 
+                  <select
                     value={formData.teamLead.department}
                     onChange={(e) => updateTeamLead('department', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
@@ -412,7 +456,7 @@ export default function Registration({setform,onsubmit}) {
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
                     Year of Study
                   </label>
-                  <select 
+                  <select
                     value={formData.teamLead.year}
                     onChange={(e) => updateTeamLead('year', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
@@ -441,7 +485,7 @@ export default function Registration({setform,onsubmit}) {
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
                     T-Shirt Size <span className="text-red-500">*</span>
                   </label>
-                  <select 
+                  <select
                     value={formData.teamLead.tshirtSize}
                     onChange={(e) => updateTeamLead('tshirtSize', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
@@ -455,8 +499,8 @@ export default function Registration({setform,onsubmit}) {
                     <option value="XXL">XXL</option>
                   </select>
                 </div>
-                
-                    <label className="inline-flex items-center cursor-pointer">
+
+                {/* <label className="inline-flex items-center cursor-pointer">
                       <input type="checkbox" value={"Yes"} 
                       checked={formData.teamLead.isCsi || false}
                      onChange={(e) => {
@@ -483,7 +527,7 @@ export default function Registration({setform,onsubmit}) {
                 ></div>
 
                       <span className="select-none ms-3 text-sm font-medium text-heading">Are You CSi Member?</span>
-                    </label>
+                    </label> */}
 
               </div>
             </div>
@@ -504,15 +548,11 @@ export default function Registration({setform,onsubmit}) {
                   >
                     <X size={20} />
                   </button>
-                 <span className="ml-auto inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
-  {
-    formData.teamMembers.some(
-      data => data.id === member.id && data.isCsi
-    )
-      ? "- ₹750"
-      : "- ₹850"
-  }
-</span>
+                  <span className="ml-auto inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
+                    {
+                      "/850"
+                    }
+                  </span>
 
                 </div>
 
@@ -529,7 +569,21 @@ export default function Registration({setform,onsubmit}) {
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                     />
                   </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">
+                      gender <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={member.gender}
+                      onChange={(e) => updateTeamMember(member.id, 'gender', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
 
+                    </select>
+                  </div>
                   <div>
                     <label className="block text-sm font-semibold mb-2 text-gray-700">
                       Email ID <span className="text-red-500">*</span>
@@ -560,7 +614,7 @@ export default function Registration({setform,onsubmit}) {
                     <label className="block text-sm font-semibold mb-2 text-gray-700">
                       Department <span className="text-red-500">*</span>
                     </label>
-                    <select 
+                    <select
                       value={member.department}
                       onChange={(e) => updateTeamMember(member.id, 'department', e.target.value)}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
@@ -586,7 +640,7 @@ export default function Registration({setform,onsubmit}) {
                     <label className="block text-sm font-semibold mb-2 text-gray-700">
                       Year of Study
                     </label>
-                    <select 
+                    <select
                       value={member.year}
                       onChange={(e) => updateTeamMember(member.id, 'year', e.target.value)}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
@@ -602,7 +656,7 @@ export default function Registration({setform,onsubmit}) {
                     <label className="block text-sm font-semibold mb-2 text-gray-700">
                       T-Shirt Size <span className="text-red-500">*</span>
                     </label>
-                    <select 
+                    <select
                       value={member.tshirtSize}
                       onChange={(e) => updateTeamMember(member.id, 'tshirtSize', e.target.value)}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
@@ -616,19 +670,19 @@ export default function Registration({setform,onsubmit}) {
                       <option value="XXL">XXL</option>
                     </select>
                   </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    Location
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Bhimavaram, Andhra Pradesh"
-                    value={member.location}
-                    onChange={(e) => updateTeamMember(member.id,"location",e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
-                  />
-                </div>
-                <label className="inline-flex items-center cursor-pointer">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">
+                      Location
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Bhimavaram, Andhra Pradesh"
+                      value={member.location}
+                      onChange={(e) => updateTeamMember(member.id, "location", e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
+                    />
+                  </div>
+                  {/* <label className="inline-flex items-center cursor-pointer">
                       <input type="checkbox" value={"Yes"} 
                       checked={member.isCsi || false}
                      onChange={(e) => {
@@ -642,8 +696,8 @@ export default function Registration({setform,onsubmit}) {
                        after:absolute after:top-[2px] after:start-[2px] 
                        after:bg-black after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
                       <span className="select-none ms-3 text-sm font-medium text-heading">Are You CSi Member?</span>
-                    </label>
-                  
+                    </label> */}
+
                 </div>
               </div>
             ))}
@@ -654,7 +708,7 @@ export default function Registration({setform,onsubmit}) {
                 onClick={addTeamMember}
                 disabled={formData.teamMembers.length >= 5}
                 className="group relative px-6 md:px-8 py-3 md:py-4 border-2 border-dashed rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:shadow-md hover:scale-105 w-full sm:w-auto"
-                style={{ 
+                style={{
                   borderColor: '#d97706',
                   color: '#d97706'
                 }}
