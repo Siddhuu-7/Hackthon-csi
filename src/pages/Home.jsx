@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { motion, stagger, useAnimate, useInView } from "framer-motion";
 import { ArrowRight, Users, FileText, Calendar, Award, Target, Zap, Trophy, Clock, MapPin, Mail, Phone, LogIn, LogOut, User, Image as Image1 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Image from '../assets/image.jpg';
@@ -7,9 +8,6 @@ import { Timeline } from "@/components/ui/timeline";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { FloatingNav } from "@/components/ui/floating-navbar";
-
-// Timeline Event Component with individual scroll tracking
-
 
 // Previous Events Section Component
 function PreviousEvents() {
@@ -24,7 +22,7 @@ function PreviousEvents() {
         </div>
 
         {/* DevOps Flowthon Feature */}
-        <div ref={boxRef} className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 mb-20 hover:border-orange-500/30 transition-all duration-300 h-[500px] overflow-y-auto scroll-smooth">
+        <div ref={boxRef} className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 mb-20 hover:border-orange-500/30 transition-all duration-300 h-[500px] overflow-y-auto scrollbar-modern">
           <div className="grid md:grid-cols-2 gap-12 items-center p-8">
             <div className="order-2 md:order-1 space-y-6">
               <div className="inline-block px-4 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm font-semibold border border-orange-500/30">
@@ -58,7 +56,6 @@ function PreviousEvents() {
                     <p className="text-xs opacity-60 mt-1">1920x1080 Recommended</p>
                   </div>
                 </div>
-                {/* User should replace this img src with their own */}
                 {/* <img src="/path/to/event-image.jpg" alt="DevOps Flowthon" className="absolute inset-0 w-full h-full object-cover" /> */}
               </div>
             </div>
@@ -316,22 +313,32 @@ export default function Home() {
 
       <section className="relative min-h-screen flex items-center justify-center px-4 md:px-8 pt-20">
         <div
-          className="max-w-6xl mx-auto text-center"
           style={{
             transform: `translateY(${scrollY * 0.3}px)`,
-            opacity: 1 - scrollY / 800
           }}
+          className="max-w-6xl mx-auto text-center [mask-image:linear-gradient(to_bottom,white_80%,transparent_100%)]"
         >
           <div className="inline-block px-4 py-2 bg-orange-500/20 border border-orange-500/40 rounded-full mb-6 backdrop-blur-sm">
             <span className="text-orange-400 font-semibold text-sm">🚀 Applications Open Now</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
-            Build. Innovate.
-            <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Transform Ideas
-            </span>
-          </h1>
+          <div className="mb-6">
+            <TypewriterEffect
+              words={[
+                { text: "Build.", className: "text-white" },
+                { text: "Innovate.", className: "text-white" },
+              ]}
+              className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight"
+            />
+            <TypewriterEffect
+              words={[
+                { text: "Transform", className: "bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent" },
+                { text: "Ideas", className: "bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent" },
+              ]}
+              className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight block mt-2"
+              delay={1.5}
+            />
+          </div>
 
           <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
             Join 500+ innovators in a 24-hour hackathon to solve real-world problems and win amazing prizes
@@ -379,37 +386,34 @@ export default function Home() {
 
       <section id="about" className="relative py-20 px-4 md:px-8 overflow-hidden">
         <div className="max-w-6xl mx-auto relative z-10">
-          <div
-            className="text-center mb-16 transition-all duration-1000"
-            style={{
-              opacity: scrollY > 300 ? 1 : 0,
-              transform: `translateY(${scrollY > 300 ? 0 : 50}px)`
-            }}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-mono">
-              {scrollY > 300 ? (
-                <span className="animate-pulse text-green-400">About VIDBHAV</span>
-              ) : (
-                "About VIDBHAV"
-              )}
+              About VIDBHAV
             </h2>
             <div className="w-20 h-1 bg-green-500 mx-auto shadow-[0_0_10px_#22c55e]"></div>
-          </div>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="grid md:grid-cols-2 gap-8 items-center"
+          >
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div className="md:col-span-2 bg-white/5 backdrop-blur-md rounded-2xl p-2 border border-white/10 relative group overflow-hidden">
-                {/* Scanline Effect */}
-                {/*<div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-500/10 to-transparent w-full h-full z-20 animate-[scan_2s_linear_infinite] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>*/}
-
                 <img
                   src={Image}
                   alt="Sample"
                   className="w-full h-90 md:h-[400px] object-cover rounded-xl shadow-2xl transition-all duration-500"
                 />
 
-                {/* Glitch Overlay */}
-                {/*<div className="absolute inset-0 bg-green-500/10 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>*/}
               </div>
             </div>
 
@@ -432,10 +436,11 @@ export default function Home() {
                 </HoverBorderGradient>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
+      {/*Timeline Section*/}
       <section id="timeline" className="relative py-20 px-4 md:px-8 bg-transparent overflow-hidden">
         <Timeline
           data={[
@@ -579,7 +584,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEW SECTION: Previous Events & Gallery */}
+      {/* SECTION: Previous Events & Gallery */}
       <PreviousEvents className="h-[500px]" />
 
       <section className="relative py-20 px-4 md:px-8">
@@ -617,7 +622,7 @@ export default function Home() {
                 <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
                   <Zap className="text-white" size={24} />
                 </div>
-                <span className="text-white font-bold text-xl">InnoHack 2025</span>
+                <span className="text-white font-bold text-xl">VIDHBAV 2025</span>
               </div>
               <p className="text-gray-400 text-sm">
                 Empowering innovation through collaborative problem-solving
@@ -638,7 +643,7 @@ export default function Home() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-gray-400">
                   <Mail size={16} />
-                  <span className="text-sm">info@innohack.com</span>
+                  <span className="text-sm">info@vidhbav.com</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-400">
                   <Phone size={16} />
@@ -650,7 +655,7 @@ export default function Home() {
 
           <div className="pt-8 border-t border-white/10 text-center">
             <p className="text-gray-400 text-sm">
-              © 2024 InnoHack. All rights reserved.
+              © 2024 VIDHBAV. All rights reserved.
             </p>
           </div>
         </div>
@@ -658,3 +663,64 @@ export default function Home() {
     </div>
   );
 }
+
+const TypewriterEffect = ({
+  words,
+  className,
+  cursorClassName = "",
+  delay = 0
+}) => {
+  // split text into array of characters
+  const wordsArray = words.map((word) => {
+    return {
+      ...word,
+      text: word.text.split(""),
+    };
+  });
+
+  const [scope, animate] = useAnimate();
+  const isInView = useInView(scope);
+
+  useEffect(() => {
+    if (isInView) {
+      animate("span", {
+        display: "inline-block",
+        opacity: 1,
+        width: "fit-content",
+      }, {
+        duration: 0.3,
+        delay: stagger(0.1, { startDelay: delay }),
+        ease: "easeInOut",
+      });
+    }
+  }, [isInView, delay]);
+
+  const renderWords = () => {
+    return (
+      (<motion.div ref={scope} className="inline">
+        {wordsArray.map((word, idx) => {
+          return (
+            (<div key={`word-${idx}`} className="inline-block">
+              {word.text.map((char, index) => (
+                <motion.span
+                  initial={{
+                  }}
+                  key={`char-${index}`}
+                  className={`dark:text-white text-black opacity-0 hidden ${word.className}`}>
+                  {char}
+                </motion.span>
+              ))}
+              &nbsp;
+            </div>)
+          );
+        })}
+      </motion.div>)
+    );
+  };
+  return (
+    (<div
+      className={`text-center ${className}`}>
+      {renderWords()}
+    </div>)
+  );
+};

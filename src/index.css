@@ -40,3 +40,23 @@
 .timeline-glow-animate {
   animation: timeline-glow 1.5s ease-in-out infinite, timeline-flow 2s linear infinite;
 }
+
+/* Custom Scrollbar */
+.scrollbar-modern::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-modern::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-modern::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 100vh;
+}
+
+.scrollbar-modern::-webkit-scrollbar-thumb:hover {
+  background: rgba(249, 115, 22, 0.5);
+  /* Orange hover to match theme */
+}

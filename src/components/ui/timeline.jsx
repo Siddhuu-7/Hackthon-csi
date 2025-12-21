@@ -80,14 +80,21 @@ export const Timeline = ({ data }) => {
                         {/* Left Side (Empty for Even, Content for Odd) */}
                         <div className="hidden md:block w-5/12">
                             {index % 2 !== 0 && (
-                                <HoverBorderGradient
-                                    as="div"
-                                    containerClassName="rounded-xl w-full"
-                                    className="min-h-[150px] bg-gray-900/40 backdrop-blur-md flex flex-col items-end text-right p-6 w-full h-full justify-center"
+                                <motion.div
+                                    initial={{ opacity: 0, x: -50 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.5, delay: 0.2 }}
+                                    viewport={{ once: true }}
                                 >
-                                    <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
-                                    <div className="text-neutral-300">{item.content}</div>
-                                </HoverBorderGradient>
+                                    <HoverBorderGradient
+                                        as="div"
+                                        containerClassName="rounded-xl w-full"
+                                        className="min-h-[150px] bg-gray-900/40 backdrop-blur-md flex flex-col items-end text-right p-6 w-full h-full justify-center"
+                                    >
+                                        <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+                                        <div className="text-neutral-300">{item.content}</div>
+                                    </HoverBorderGradient>
+                                </motion.div>
                             )}
                         </div>
 
@@ -111,23 +118,37 @@ export const Timeline = ({ data }) => {
                         {/* Right Side (Content for Even, Empty for Odd) */}
                         <div className="w-full pl-16 md:pl-0 md:w-5/12">
                             {index % 2 === 0 ? (
-                                <HoverBorderGradient
-                                    as="div"
-                                    containerClassName="rounded-xl w-full"
-                                    className="min-h-[150px] bg-gray-900/40 backdrop-blur-md flex flex-col items-start text-left p-6 w-full h-full justify-center"
+                                <motion.div
+                                    initial={{ opacity: 0, x: 50 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.5, delay: 0.2 }}
+                                    viewport={{ once: true }}
                                 >
-                                    <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
-                                    <div className="text-neutral-300">{item.content}</div>
-                                </HoverBorderGradient>
+                                    <HoverBorderGradient
+                                        as="div"
+                                        containerClassName="rounded-xl w-full"
+                                        className="min-h-[150px] bg-gray-900/40 backdrop-blur-md flex flex-col items-start text-left p-6 w-full h-full justify-center"
+                                    >
+                                        <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+                                        <div className="text-neutral-300">{item.content}</div>
+                                    </HoverBorderGradient>
+                                </motion.div>
                             ) : (
-                                <HoverBorderGradient
-                                    as="div"
-                                    containerClassName="rounded-xl w-full md:hidden"
-                                    className="min-h-[150px] bg-gray-900/40 backdrop-blur-md flex flex-col items-start text-left p-6 w-full h-full justify-center"
+                                <motion.div
+                                    initial={{ opacity: 0, x: 50 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.5, delay: 0.2 }}
+                                    viewport={{ once: true }}
                                 >
-                                    <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
-                                    <div className="text-neutral-300">{item.content}</div>
-                                </HoverBorderGradient>
+                                    <HoverBorderGradient
+                                        as="div"
+                                        containerClassName="rounded-xl w-full md:hidden"
+                                        className="min-h-[150px] bg-gray-900/40 backdrop-blur-md flex flex-col items-start text-left p-6 w-full h-full justify-center"
+                                    >
+                                        <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+                                        <div className="text-neutral-300">{item.content}</div>
+                                    </HoverBorderGradient>
+                                </motion.div>
                             )}
                         </div>
                     </div>
