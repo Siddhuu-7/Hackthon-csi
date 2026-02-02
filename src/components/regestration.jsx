@@ -3,7 +3,6 @@ import { X, Users, CheckCircle, Plus, MoveRight, MoveLeft, Loader2, Save, CheckC
 import { replace, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-// import { teamService } from '../lib/appwrite'; // Removed
 
 export default function Registration({ setform, onsubmit }) {
   const { user } = useAuth();
@@ -171,7 +170,7 @@ export default function Registration({ setform, onsubmit }) {
     return (
       <div className="w-full flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-orange-500 mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 animate-spin text-teal-500 mx-auto mb-4" />
           <p className="text-gray-600">Loading your registration data...</p>
         </div>
       </div>

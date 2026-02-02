@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // No-op functions since Appwrite is removed
+  // Authentication functions (no backend)
   const login = async (email, password) => {
     console.log("Login disabled (backend removed)");
     return { success: false, error: "Backend removed" };

@@ -21,7 +21,15 @@ export const FloatingNav = ({
     useMotionValueEvent(scrollYProgress, "change", (current) => {
         // Check if current is not undefined and is a number
         if (typeof current === "number") {
-            let direction = current - scrollYProgress.getPrevious();
+            const previous = scrollYProgress.getPrevious();
+
+            // Handle undefined previous value at page start
+            if (previous === undefined || previous === null) {
+                setVisible(true);
+                return;
+            }
+
+            let direction = current - previous;
 
             if (scrollYProgress.get() < 0.05) {
                 setVisible(true);

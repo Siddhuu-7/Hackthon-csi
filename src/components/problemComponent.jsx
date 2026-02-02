@@ -46,7 +46,7 @@ const ProblemCard = ({ problem, isExpanded, onToggle, index }) => {
 
   return (
     <div
-      className="bg-white/5 backdrop-blur-md rounded-xl border border-white/10 hover:border-orange-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 hover:bg-white/10"
+      className="bg-white/5 backdrop-blur-md rounded-xl border border-white/10 hover:border-teal-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/10 hover:bg-white/10"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Header - Always Visible */}
@@ -72,7 +72,7 @@ const ProblemCard = ({ problem, isExpanded, onToggle, index }) => {
                   {problem.category}
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-white mb-2 hover:text-orange-400 transition-colors">
+              <h3 className="text-xl font-bold text-white mb-2 hover:text-teal-400 transition-colors">
                 {problem.title}
               </h3>
               <p className="text-gray-300 leading-relaxed">{problem.description}</p>
@@ -92,7 +92,7 @@ const ProblemCard = ({ problem, isExpanded, onToggle, index }) => {
           {problem.tags.map((tag, idx) => (
             <span
               key={idx}
-              className="px-3 py-1 bg-white/5 rounded-md text-sm text-gray-300 border border-white/10 hover:bg-purple-500/20 hover:border-purple-500/30 hover:text-purple-300 transition-all duration-200 cursor-default"
+              className="px-3 py-1 bg-white/5 rounded-md text-sm text-gray-300 border border-white/10 hover:bg-teal-500/20 hover:border-teal-500/30 hover:text-teal-300 transition-all duration-200 cursor-default"
             >
               {tag}
             </span>
@@ -106,13 +106,13 @@ const ProblemCard = ({ problem, isExpanded, onToggle, index }) => {
           {/* Requirements */}
           <div className="animate-fadeIn">
             <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
-              <span className="w-1 h-5 bg-orange-500 rounded"></span>
+              <span className="w-1 h-5 bg-teal-500 rounded"></span>
               Requirements
             </h4>
             <ul className="space-y-2 ml-6">
               {problem.requirements.map((req, idx) => (
                 <li key={idx} className="flex items-start gap-3 text-gray-300 leading-relaxed">
-                  <span className="text-orange-400 font-bold mt-0.5">•</span>
+                  <span className="text-teal-400 font-bold mt-0.5">•</span>
                   <span>{req}</span>
                 </li>
               ))}
@@ -138,14 +138,14 @@ const ProblemCard = ({ problem, isExpanded, onToggle, index }) => {
           {/* Technologies */}
           <div className="animate-fadeIn" style={{ animationDelay: "200ms" }}>
             <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
-              <span className="w-1 h-5 bg-purple-500 rounded"></span>
+              <span className="w-1 h-5 bg-teal-500 rounded"></span>
               Suggested Technologies
             </h4>
             <div className="flex flex-wrap gap-2 ml-6">
               {problem.technologies.map((tech, idx) => (
                 <span
                   key={idx}
-                  className="px-4 py-2 bg-white/5 rounded-lg text-gray-300 font-medium border border-white/10 hover:bg-purple-500/20 hover:border-purple-500/30 hover:text-purple-300 transition-all duration-200 cursor-default"
+                  className="px-4 py-2 bg-white/5 rounded-lg text-gray-300 font-medium border border-white/10 hover:bg-teal-500/20 hover:border-teal-500/30 hover:text-teal-300 transition-all duration-200 cursor-default"
                 >
                   {tech}
                 </span>
@@ -155,12 +155,12 @@ const ProblemCard = ({ problem, isExpanded, onToggle, index }) => {
 
           {/* Points */}
           <div
-            className="bg-gradient-to-br from-orange-500/20 to-pink-500/20 border border-orange-500/30 rounded-xl p-4 ml-6 hover:shadow-md hover:shadow-orange-500/20 transition-all duration-300 backdrop-blur-sm"
+            className="bg-gradient-to-br from-teal-500/20 to-pink-500/20 border border-teal-500/30 rounded-xl p-4 ml-6 hover:shadow-md hover:shadow-teal-500/20 transition-all duration-300 backdrop-blur-sm"
             style={{ animationDelay: "300ms" }}
           >
             <div className="flex items-center justify-between">
               <span className="text-gray-300 font-semibold">Total Points</span>
-              <span className="text-3xl font-bold text-orange-400">{problem.points}</span>
+              <span className="text-3xl font-bold text-teal-400">{problem.points}</span>
             </div>
           </div>
         </div>

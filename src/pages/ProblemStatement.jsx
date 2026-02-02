@@ -50,19 +50,19 @@ export default function ProblemStatements() {
         />
       </div>
 
-      <div className="relative bg-gradient-to-br from-purple-900/40 via-pink-900/40 to-purple-900/40 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-teal-900/40 via-cyan-900/40 to-teal-900/40 overflow-hidden">
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-purple-500 rounded-full blur-3xl"></div>
+          <div className="absolute top-20 left-10 w-64 h-64 bg-teal-500 rounded-full blur-3xl"></div>
           <div className="absolute top-40 right-20 w-96 h-96 bg-pink-500 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-purple-600 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-teal-600 rounded-full blur-3xl"></div>
         </div>
 
         <div className="relative max-w-6xl mx-auto px-6 py-12">
           {/* Back Button */}
           <button
             onClick={handleBack}
-            className="group flex items-center gap-2 text-purple-200 hover:text-white mb-8 transition-all duration-200"
+            className="group flex items-center gap-2 text-teal-200 hover:text-white mb-8 transition-all duration-200"
           >
             <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Back</span>
@@ -70,12 +70,12 @@ export default function ProblemStatements() {
 
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-3 mb-4">
-              <div className="p-2 bg-orange-500/20 rounded-lg backdrop-blur-sm border border-orange-400/30">
-                <Code className="text-orange-300" size={28} />
+              <div className="p-2 bg-teal-500/20 rounded-lg backdrop-blur-sm border border-teal-400/30">
+                <Code className="text-teal-300" size={28} />
               </div>
               <h1 className="text-4xl md:text-5xl font-bold text-white">Problem Statements</h1>
             </div>
-            <p className="text-lg text-purple-100 leading-relaxed">
+            <p className="text-lg text-teal-100 leading-relaxed">
               Choose from <span className="font-semibold text-white">8 challenging problems</span> across various
               domains. Build innovative solutions and showcase your technical skills.
             </p>
@@ -100,7 +100,7 @@ export default function ProblemStatements() {
               placeholder="Search problems by title or description..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-white placeholder-gray-400 backdrop-blur-sm"
+              className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-white placeholder-gray-400 backdrop-blur-sm"
             />
           </div>
 
@@ -115,7 +115,7 @@ export default function ProblemStatements() {
                     key={category}
                     onClick={() => setSelectedCategory(category)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${selectedCategory === category
-                      ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md"
+                      ? "bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-md"
                       : "bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10"
                       }`}
                   >
@@ -134,7 +134,7 @@ export default function ProblemStatements() {
                     key={difficulty}
                     onClick={() => setSelectedDifficulty(difficulty)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${selectedDifficulty === difficulty
-                      ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md"
+                      ? "bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-md"
                       : "bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10"
                       }`}
                   >
@@ -184,7 +184,7 @@ export default function ProblemStatements() {
         <div className="max-w-6xl mx-auto px-6 text-center">
           <p className="text-gray-400">
             Need help? Contact us at{" "}
-            <a href="mailto:support@example.com" className="text-orange-400 hover:text-orange-300 transition-colors">
+            <a href="mailto:support@example.com" className="text-teal-400 hover:text-teal-300 transition-colors">
               support@example.com
             </a>
           </p>
