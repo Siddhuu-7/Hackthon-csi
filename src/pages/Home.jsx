@@ -211,7 +211,9 @@ export default function Home() {
               <Button
                 size="lg"
                 className="text-lg px-8 py-6 shadow-lg shadow-teal-500/25"
-                onClick={() => handleNavigation('/registration')}
+                onClick={() => {
+                  // YOUR LINK HERE
+                }}
               >
                 Register Now
                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -469,13 +471,13 @@ export default function Home() {
             },
             {
               date: "FEB 20, 2025",
-              title: "PPT Submission Deadline",
-              content: "Submit your project presentation for initial screening.",
+              title: "Registration Closes",
+              content: "Last day to register your team and finalize details.",
             },
             {
               date: "FEB 25, 2025",
-              title: "Registration Closes",
-              content: "Last day to register your team and finalize details.",
+              title: "PPT Submission Deadline",
+              content: "Submit your project presentation for initial screening.",
             },
             {
               date: "MAR 1-2, 2025",

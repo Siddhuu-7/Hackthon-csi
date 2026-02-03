@@ -37,7 +37,7 @@ const Navbar = () => {
                     <div className="flex items-center justify-between h-16 md:h-20">
                         {/* Logo */}
                         <a href="#" className="font-display text-xl md:text-2xl font-bold gradient-text">
-                            UDHBAV 2K25
+                            UDHBAV 2K26
                         </a>
 
                         {/* Desktop Nav */}

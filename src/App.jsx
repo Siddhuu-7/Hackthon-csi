@@ -1,30 +1,25 @@
-
 import Homepage from './pages/Home';
-import Regestration from "./pages/RegestrationPage"
-import React from 'react'
-import ProblemStatement from './pages/ProblemStatement';
-import AuthPage from './pages/AuthPage';
+import React, { useState } from 'react'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/Auth/ProtectedRoute';
+import { AnimatePresence } from 'framer-motion';
+import Preloader from './components/Preloader';
 
 export default function App() {
+  const [loading, setLoading] = useState(true);
+
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route element={<Homepage />} path='/' />
-          <Route element={<AuthPage />} path='/auth' />
-          <Route
-            element={
-              <ProtectedRoute>
-                <Regestration />
-              </ProtectedRoute>
-            }
-            path='/registration'
-          />
-          <Route element={<ProblemStatement />} path='/statement' />
-        </Routes>
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <Preloader key="preloader" onComplete={() => setLoading(false)} />
+          ) : (
+            <Routes>
+              <Route element={<Homepage />} path='/' />
+            </Routes>
+          )}
+        </AnimatePresence>
       </AuthProvider>
     </BrowserRouter>
   )
