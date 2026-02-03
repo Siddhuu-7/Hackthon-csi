@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const registrationUrl = "https://unstop.com/o/8P4wryC?utm_medium=Share&utm_source=logged_out_user&utm_campaign=Online_coding_challenge";
 
     useEffect(() => {
         const handleScroll = () => {
@@ -17,10 +18,14 @@ const Navbar = () => {
 
     const navLinks = [
         { label: "About", href: "#about" },
-        { label: "Domains", href: "#domains" },
+        { label: "Tracks", href: "#tracks" },
         { label: "Timeline", href: "#timeline" },
         { label: "Sponsors", href: "#sponsors" },
     ];
+
+    const handleRegistration = () => {
+        window.location.href = registrationUrl;
+    };
 
     return (
         <>
@@ -51,7 +56,7 @@ const Navbar = () => {
                                     {link.label}
                                 </a>
                             ))}
-                            <Button size="sm" className="btn-glow font-display">
+                            <Button size="sm" className="btn-glow font-display" onClick={handleRegistration}>
                                 Register
                             </Button>
                         </div>
@@ -97,7 +102,13 @@ const Navbar = () => {
                                         {link.label}
                                     </a>
                                 ))}
-                                <Button className="btn-glow font-display mt-4" onClick={() => setIsMobileMenuOpen(false)}>
+                                <Button
+                                    className="btn-glow font-display mt-4"
+                                    onClick={() => {
+                                        setIsMobileMenuOpen(false);
+                                        handleRegistration();
+                                    }}
+                                >
                                     Register Now
                                 </Button>
                             </div>

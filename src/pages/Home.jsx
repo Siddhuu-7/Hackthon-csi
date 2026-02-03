@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   const canvasRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const registrationUrl = "https://unstop.com/o/8P4wryC?utm_medium=Share&utm_source=logged_out_user&utm_campaign=Online_coding_challenge";
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
   useEffect(() => {
@@ -130,6 +131,10 @@ export default function Home() {
     navigate(path)
   };
 
+  const handleRegistration = () => {
+    window.location.href = registrationUrl;
+  };
+
   return (
     <div className={`relative overflow-hidden transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} `}>
       <div className="fixed top-0 left-0 w-full h-full -z-10 animated-gradient-bg">
@@ -185,7 +190,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              The Ultimate 24-Hour Hackathon Experience. Build the future with code, creativity, and collaboration.
+              The Ultimate 12-Hour Hackathon Experience. Build the future with code, creativity, and collaboration.
             </motion.p>
 
             {/* Countdown */}
@@ -211,9 +216,7 @@ export default function Home() {
               <Button
                 size="lg"
                 className="text-lg px-8 py-6 shadow-lg shadow-teal-500/25"
-                onClick={() => {
-                  // YOUR LINK HERE
-                }}
+                onClick={handleRegistration}
               >
                 Register Now
                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -236,9 +239,9 @@ export default function Home() {
               transition={{ delay: 1.1 }}
             >
               {[
-                { value: "500+", label: "Participants" },
-                { value: "24H", label: "Duration" },
-                { value: "₹50K+", label: "In Prizes" },
+                { value: "100+", label: "Participants" },
+                { value: "12H", label: "Duration" },
+                { value: "35K+", label: "In Prizes" },
                 { value: "20+", label: "Mentors" },
               ].map((stat, i) => (
                 <div key={i} className="text-center">
@@ -287,7 +290,7 @@ export default function Home() {
             </h2>
             <p className="text-lg text-gray-400 max-w-3xl mx-auto mt-8">
               Udhbav 2K25 is the flagship hackathon that brings together the brightest minds
-              to solve real-world problems through technology. Join us for 24 hours of innovation,
+              to solve real-world problems through technology. Join us for 12 hours of innovation,
               learning, and unforgettable experiences.
             </p>
           </motion.div>
@@ -311,7 +314,7 @@ export default function Home() {
               },
               {
                 icon: Zap,
-                title: "24-Hour Sprint",
+                title: "12-Hour Sprint",
                 description: "Intense coding marathon with exciting challenges",
               },
               {
@@ -348,7 +351,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 relative" id="domains">
+      <section className="py-24 relative" id="tracks">
         <div className="absolute inset-0 grid-pattern opacity-20" />
 
         <div className="container mx-auto px-4 relative z-10">
@@ -360,10 +363,10 @@ export default function Home() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold section-title mb-6">
-              Hackathon <span className="gradient-text">Domains</span>
+              Hackathon <span className="gradient-text">Tracks</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto mt-8">
-              Choose your battlefield. Exciting domains to showcase your skills.
+              Choose your battlefield. Exciting tracks to showcase your skills.
             </p>
           </motion.div>
 
@@ -398,6 +401,12 @@ export default function Home() {
                 title: "Agentic AI",
                 description: "Build autonomous AI agents capable of reasoning, planning, and executing complex tasks.",
                 gradient: "from-purple-500 to-pink-500",
+              },
+              {
+                icon: Cpu,
+                title: "Quantum Computing",
+                description: "Explore quantum algorithms, optimization, and the next generation of computing.",
+                gradient: "from-teal-300 to-cyan-500",
               },
               {
                 icon: Shield,
@@ -482,7 +491,7 @@ export default function Home() {
             {
               date: "MAR 1-2, 2025",
               title: "Hackathon Days",
-              content: "24 hours of non-stop innovation, coding, and building.",
+              content: "12 hours of non-stop innovation, coding, and building.",
             },
             {
               date: "MAR 2, 2025",
@@ -491,6 +500,35 @@ export default function Home() {
             },
           ]}
         />
+      </section>
+
+      <section className="relative py-24 px-4 md:px-8 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-teal-500/10 to-transparent" />
+        <div className="relative max-w-5xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white/5 border border-white/10 rounded-3xl px-8 md:px-12 py-12 backdrop-blur-md"
+          >
+            <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Ready to build something unforgettable?
+            </h3>
+            <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mb-8">
+              Join UDHBAV 2K26 for 12 hours of focused creation, rapid learning, and a community
+              that ships bold ideas. Your next breakthrough starts here.
+            </p>
+            <Button
+              size="lg"
+              className="text-lg px-10 py-6 shadow-lg shadow-teal-500/30 btn-glow font-display"
+              onClick={handleRegistration}
+            >
+              Register Now
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </motion.div>
+        </div>
       </section>
 
 
@@ -545,4 +583,6 @@ export default function Home() {
     </div>
   );
 }
+
+
 

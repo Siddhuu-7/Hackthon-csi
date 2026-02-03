@@ -330,6 +330,212 @@ section {
   animation: timeline-glow 1.5s ease-in-out infinite, timeline-flow 2s linear infinite;
 }
 
+/* Preloader neon glitch boot effects */
+@keyframes glitchShift {
+  0% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-1px);
+  }
+
+  40% {
+    transform: translateX(1px);
+  }
+
+  60% {
+    transform: translateX(-1px);
+  }
+
+  80% {
+    transform: translateX(1px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes scanlineSweep {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+@keyframes flicker {
+
+  0%,
+  100% {
+    opacity: 0.95;
+  }
+
+  10% {
+    opacity: 0.85;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  30% {
+    opacity: 0.9;
+  }
+
+  40% {
+    opacity: 0.98;
+  }
+
+  50% {
+    opacity: 0.88;
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0.92;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes noiseDrift {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-5%, 5%);
+  }
+
+  100% {
+    transform: translate(5%, -5%);
+  }
+}
+
+@keyframes caretBlink {
+
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  color: var(--color-foreground);
+  text-shadow:
+    0 0 12px rgba(20, 184, 166, 0.6),
+    0 0 24px rgba(6, 182, 212, 0.35);
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.glitch-text::before {
+  color: var(--color-accent);
+  opacity: 0.35;
+  transform: translate(1px, 0);
+  clip-path: inset(0 0 60% 0);
+  animation: glitchShift 2.2s infinite;
+  animation-delay: var(--glitch-delay, 0s);
+}
+
+.glitch-text::after {
+  color: var(--color-primary);
+  opacity: 0.25;
+  transform: translate(-1px, 0);
+  clip-path: inset(40% 0 0 0);
+  animation: glitchShift 2.6s infinite;
+  animation-delay: calc(var(--glitch-delay, 0s) + 0.12s);
+}
+
+.flicker {
+  animation: flicker 2.4s linear infinite;
+  animation-delay: var(--flicker-delay, 0s);
+}
+
+.glitch-letter {
+  margin: 0 0.12em;
+}
+
+.scanlines {
+  position: absolute;
+  inset: -20%;
+  background-image: repeating-linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.05) 0,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px,
+      transparent 3px);
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+  animation: scanlineSweep 6s linear infinite;
+  pointer-events: none;
+}
+
+.noise-layer {
+  position: absolute;
+  inset: -40%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  opacity: 0.12;
+  mix-blend-mode: soft-light;
+  animation: noiseDrift 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.boot-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center,
+      rgba(20, 184, 166, 0.12) 0%,
+      rgba(8, 11, 20, 0.85) 55%,
+      rgba(8, 11, 20, 0.98) 100%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.boot-line {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(224, 255, 255, 0.7);
+  text-shadow: 0 0 8px rgba(20, 184, 166, 0.35);
+}
+
+.boot-caret {
+  display: inline-block;
+  margin-left: 0.5ch;
+  color: var(--color-accent);
+  animation: caretBlink 1s steps(2, start) infinite;
+}
+
 /* Custom Scrollbar for specific elements */
 .scrollbar-modern::-webkit-scrollbar {
   width: 6px;
