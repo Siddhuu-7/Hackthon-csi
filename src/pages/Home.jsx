@@ -303,6 +303,12 @@ export default function Home() {
                 description: "Create innovative solutions using cutting-edge technologies",
               },
               {
+                icon: Lightbulb,
+                title: "UI/UX Workshop (First Years)",
+                description: "Exclusive UI/UX track for first-year students with a 3-day hands-on workshop.",
+                highlight: true,
+              },
+              {
                 icon: Users,
                 title: "Team Up",
                 description: "Collaborate with like-minded developers and designers",
@@ -311,11 +317,6 @@ export default function Home() {
                 icon: Lightbulb,
                 title: "Innovate",
                 description: "Transform your ideas into working prototypes",
-              },
-              {
-                icon: Zap,
-                title: "12-Hour Sprint",
-                description: "Intense coding marathon with exciting challenges",
               },
               {
                 icon: Globe,
@@ -330,12 +331,17 @@ export default function Home() {
             ].map((feature, index) => (
               <motion.div
                 key={feature.title}
-                className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 group hover:scale-105 hover:border-teal-500/30 transition-all duration-300"
+                className={`bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 group hover:scale-105 hover:border-teal-500/30 transition-all duration-300 ${feature.highlight ? "relative overflow-hidden border-teal-400/60 shadow-[0_0_30px_rgba(20,184,166,0.25)]" : ""}`}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
+                {feature.highlight ? (
+                  <div className="absolute -top-6 -right-10 rotate-12 bg-gradient-to-r from-teal-400 to-cyan-400 text-black text-xs font-bold px-8 py-2 shadow-lg">
+                    First Years Only
+                  </div>
+                ) : null}
                 <div className="w-14 h-14 rounded-xl bg-teal-500/10 flex items-center justify-center mb-6 group-hover:bg-teal-500/20 transition-colors">
                   <feature.icon className="w-7 h-7 text-teal-400" />
                 </div>
@@ -392,7 +398,7 @@ export default function Home() {
               },
               {
                 icon: Database,
-                title: "Blockchain",
+                title: "Web3 & Blockchain",
                 description: "Develop decentralized solutions and smart contracts for a transparent future.",
                 gradient: "from-indigo-500 to-purple-500",
               },

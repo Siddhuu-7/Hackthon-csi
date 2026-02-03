@@ -20,7 +20,6 @@ const Navbar = () => {
         { label: "About", href: "#about" },
         { label: "Tracks", href: "#tracks" },
         { label: "Timeline", href: "#timeline" },
-        { label: "Sponsors", href: "#sponsors" },
     ];
 
     const handleRegistration = () => {
