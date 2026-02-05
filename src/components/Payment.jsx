@@ -56,7 +56,7 @@ alert(
 );
 
   } finally {
-    setLoading(false); // always reset
+    setLoading(false);
   }
 };
 
