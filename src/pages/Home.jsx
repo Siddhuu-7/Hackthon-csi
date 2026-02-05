@@ -221,14 +221,6 @@ export default function Home() {
                 Register Now
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="text-lg px-8 py-6 border-teal-500/50 hover:bg-teal-500/10"
-                onClick={() => handleNavigation('#about')}
-              >
-                Learn More
-              </Button>
             </motion.div>
 
             {/* Stats */}
@@ -305,7 +297,7 @@ export default function Home() {
               {
                 icon: Lightbulb,
                 title: "UI/UX Track (First Years)",
-                description: "Exclusive UI/UX track for first-year students with a 3-day hands-on workshop.",
+                description: "Exclusive UI/UX track for first-year students with a 3-day hands-on workshop and hackathon.",
               },
               {
                 icon: Users,
@@ -481,7 +473,7 @@ export default function Home() {
             {
               date: "FEB 9-23, 2025",
               title: "Idea Submission",
-              content: "Submits your Ideas of your projects.",
+              content: "Submit your problem statement ideas in the google form.",
             },
             {
               date: "FEB 23-28, 2025",
