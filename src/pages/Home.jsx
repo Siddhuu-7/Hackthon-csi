@@ -550,11 +550,11 @@ export default function Home() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-gray-400">
                   <Mail size={16} />
-                  <span className="text-sm">info@udhbav.com</span>
+                  <span className="text-sm">udhbav2k26.csi@gmail.com</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-400">
                   <Phone size={16} />
-                  <span className="text-sm">+91 98765 43210</span>
+                  <span className="text-sm">+91 95537 08116</span>
                 </div>
               </div>
             </div>
