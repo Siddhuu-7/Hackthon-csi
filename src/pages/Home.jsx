@@ -490,7 +490,7 @@ export default function Home() {
             },
             {
               date: "MAR 5-6, 2025",
-              title: "Hackathon Days",
+              title: "Hackathon",
               content: "24 hours of non-stop innovation, coding, and building.",
             },
           ]}
