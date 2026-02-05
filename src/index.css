@@ -63,8 +63,8 @@ h4,
 h5,
 h6 {
   font-family: 'Orbitron', sans-serif;
-  color: #111827; /* Added explicit dark color for headings */
 }
+
 
 /* Smooth scrolling */
 html {

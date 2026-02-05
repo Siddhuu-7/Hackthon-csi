@@ -277,7 +277,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              About <span className="bg-gradient-to-r from-teal-300 via-cyan-400 to-teal-500 bg-clip-text text-transparent">Udhbav</span>
+               <span className="bg-gradient-to-r from-teal-300 via-cyan-400 to-teal-500 bg-clip-text text-transparent">About Udhbav</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-3xl mx-auto mt-8">
               Udhbav 2K25 is the flagship hackathon that brings together the brightest minds
@@ -354,7 +354,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold section-title mb-6">
-              Hackathon <span className="gradient-text">Tracks</span>
+               <span className="gradient-text"> Hackathon Tracks</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto mt-8">
               Choose your battlefield. Exciting tracks to showcase your skills.
