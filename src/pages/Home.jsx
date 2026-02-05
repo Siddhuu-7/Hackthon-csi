@@ -190,7 +190,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              The Ultimate 12-Hour Hackathon Experience. Build the future with code, creativity, and collaboration.
+              The Ultimate 24-Hour Hackathon Experience. Build the future with code, creativity, and collaboration.
             </motion.p>
 
             {/* Countdown */}
@@ -240,7 +240,7 @@ export default function Home() {
             >
               {[
                 { value: "100+", label: "Participants" },
-                { value: "12H", label: "Duration" },
+                { value: "24H", label: "Duration" },
                 { value: "35K+", label: "In Prizes" },
                 { value: "20+", label: "Mentors" },
               ].map((stat, i) => (
@@ -290,7 +290,7 @@ export default function Home() {
             </h2>
             <p className="text-lg text-gray-400 max-w-3xl mx-auto mt-8">
               Udhbav 2K25 is the flagship hackathon that brings together the brightest minds
-              to solve real-world problems through technology. Join us for 12 hours of innovation,
+              to solve real-world problems through technology. Join us for 24 hours of innovation,
               learning, and unforgettable experiences.
             </p>
           </motion.div>
@@ -304,9 +304,8 @@ export default function Home() {
               },
               {
                 icon: Lightbulb,
-                title: "UI/UX Workshop (First Years)",
+                title: "UI/UX Track (First Years)",
                 description: "Exclusive UI/UX track for first-year students with a 3-day hands-on workshop.",
-                highlight: true,
               },
               {
                 icon: Users,
@@ -331,17 +330,12 @@ export default function Home() {
             ].map((feature, index) => (
               <motion.div
                 key={feature.title}
-                className={`bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 group hover:scale-105 hover:border-teal-500/30 transition-all duration-300 ${feature.highlight ? "relative overflow-hidden border-teal-400/60 shadow-[0_0_30px_rgba(20,184,166,0.25)]" : ""}`}
+                className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 group hover:scale-105 hover:border-teal-500/30 transition-all duration-300"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                {feature.highlight ? (
-                  <div className="absolute -top-6 -right-10 rotate-12 bg-gradient-to-r from-teal-400 to-cyan-400 text-black text-xs font-bold px-8 py-2 shadow-lg">
-                    First Years Only
-                  </div>
-                ) : null}
                 <div className="w-14 h-14 rounded-xl bg-teal-500/10 flex items-center justify-center mb-6 group-hover:bg-teal-500/20 transition-colors">
                   <feature.icon className="w-7 h-7 text-teal-400" />
                 </div>
@@ -480,29 +474,24 @@ export default function Home() {
         <Timeline
           data={[
             {
-              date: "FEB 1, 2025",
+              date: "FEB 5, 2025",
               title: "Registration Opens",
               content: "Start your hackathon journey with initial registration.",
             },
             {
-              date: "FEB 20, 2025",
-              title: "Registration Closes",
-              content: "Last day to register your team and finalize details.",
+              date: "FEB 9-23, 2025",
+              title: "Idea Submission",
+              content: "Submits your Ideas of your projects.",
             },
             {
-              date: "FEB 25, 2025",
-              title: "PPT Submission Deadline",
-              content: "Submit your project presentation for initial screening.",
+              date: "FEB 23-28, 2025",
+              title: "Idea Presentation Deadline",
+              content: "Present your Idea for initial screening.No Eliminations",
             },
             {
-              date: "MAR 1-2, 2025",
+              date: "MAR 5-6, 2025",
               title: "Hackathon Days",
-              content: "12 hours of non-stop innovation, coding, and building.",
-            },
-            {
-              date: "MAR 2, 2025",
-              title: "Winner Announcement",
-              content: "Awards ceremony & celebration of innovative solutions.",
+              content: "24 hours of non-stop innovation, coding, and building.",
             },
           ]}
         />
@@ -522,7 +511,7 @@ export default function Home() {
               Ready to build something unforgettable?
             </h3>
             <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mb-8">
-              Join UDHBAV 2K26 for 12 hours of focused creation, rapid learning, and a community
+              Join UDHBAV 2K26 for 24 hours of focused creation, rapid learning, and a community
               that ships bold ideas. Your next breakthrough starts here.
             </p>
             <Button
