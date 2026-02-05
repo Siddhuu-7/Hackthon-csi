@@ -18,6 +18,7 @@ export default function Registration({setform, onsubmit}) {
     teamLead: {
       name: '',
       gender: "",
+      regnum:"",
       email: '',
       mobile: '',
       department: '',
@@ -25,13 +26,14 @@ export default function Registration({setform, onsubmit}) {
       location: '',
       tshirtSize: '',
       isCsi: null,
-      price:"600",
+      price:"800",
       transactionId: ""
     },
     teamMembers: []
   });
 
   const addTeamMember = () => {
+     console.log("add member")
     if (formData.teamMembers.length < 5) {
       setFormData({
         ...formData,
@@ -40,6 +42,7 @@ export default function Registration({setform, onsubmit}) {
           {
             id: Date.now(),
             name: '',
+            regnum:"",
             gender: "",
             email: '',
             mobile: '',
@@ -48,7 +51,7 @@ export default function Registration({setform, onsubmit}) {
             tshirtSize: '',
             location: '',
             isCsi: null,
-            price: "600",
+            price: "800",
             checkingCsi: false,
             csiChecked: false
           }
@@ -111,7 +114,7 @@ export default function Registration({setform, onsubmit}) {
         teamLead: {
           ...prev.teamLead,
           isCsi: found,
-          price: found ? "600" : "600"
+          price: found ? "800" : "800"
         }
       }));
 
@@ -150,7 +153,7 @@ export default function Registration({setform, onsubmit}) {
             ? { 
                 ...m, 
                 isCsi: found, 
-                price: found ? "600" : "600",
+                price: found ? "800" : "800",
                 checkingCsi: false,
                 csiChecked: true
               } 
@@ -402,7 +405,20 @@ export default function Registration({setform, onsubmit}) {
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                   />
                 </div>
-                
+                <div>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">
+                    Regestration Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Regetsration Number"
+                    value={formData.teamLead.regnum}
+                    onChange={(e) => updateTeamLead('regnum', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
+                  />
+                </div>
+
+
                 <div>
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
                     Gender <span className="text-red-500">*</span>
@@ -518,6 +534,8 @@ export default function Registration({setform, onsubmit}) {
                   </select>
                 </div>
               </div>
+
+              
             </div>
 
             {/* Team Members */}
@@ -586,6 +604,19 @@ export default function Registration({setform, onsubmit}) {
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                     />
                   </div>
+
+                  <div>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">
+                    Regestration Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Regetsration Number"
+                    value={member.regnum}
+                    onChange={(e) => updateTeamMember(member.id,'regnum', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
+                  />
+                </div>
                   
                   <div>
                     <label className="block text-sm font-semibold mb-2 text-gray-700">

@@ -3,8 +3,8 @@ import { Users, CreditCard, CheckCircle, IndianRupee, ArrowLeft } from "lucide-r
 import axios from "axios"
 export default function PaymentSummary({ formData ,goback}) {
   if (!formData) return null;
-  const TEAM_LEAD_CSI_PRICE = 600;
-  const TEAM_LEAD_NON_CSI_PRICE = 600;
+  const TEAM_LEAD_CSI_PRICE = 800;
+  const TEAM_LEAD_NON_CSI_PRICE = 800;
 const [loading, setLoading] = useState(false);
 
   const teamLeadAmount = formData.teamLead.isCsi
@@ -42,7 +42,7 @@ const handlePayment = async () => {
 
     console.log("Backend response:", res.data);
   } catch (errors) {
-    console.error(errors.response.data.msg)
+    console.error(errors.response)
     const data = errors?.response?.data;
 
 alert(

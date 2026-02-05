@@ -1,144 +1,28 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, stagger, useAnimate, useInView } from "framer-motion";
-import { ArrowRight, Users, FileText, Calendar, Award, Target, Zap, Trophy, Clock, MapPin, Mail, Phone, LogIn, LogOut, User, Image as Image1 } from 'lucide-react';
+import { ArrowRight, Clock, Code2, Cpu, Globe, Lightbulb, LogOut, Mail, Phone, Rocket, Target, Trophy, Users, Zap, Brain, Cloud, Shield, Smartphone, Bot, Database, Wifi, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Image from '../assets/image.jpg';
+
 import { Timeline } from "@/components/ui/timeline";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
-import { FloatingNav } from "@/components/ui/floating-navbar";
+import Navbar from "@/components/Navbar";
+import CountdownTimer from "@/components/CountdownTimer";
+import FloatingElements from "@/components/FloatingElements";
+import { Button } from "@/components/ui/button";
 
-// Previous Events Section Component
-function PreviousEvents() {
-  const boxRef = useRef(null);
 
-  return (
-    <section id="previous-events" className="relative py-20 px-4 md:px-8 bg-transparent border-t border-white/10">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Previous Events</h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
-        </div>
 
-        {/* DevOps Flowthon Feature */}
-        <div ref={boxRef} className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 mb-20 hover:border-orange-500/30 transition-all duration-300 h-[500px] overflow-y-auto scrollbar-modern">
-          <div className="grid md:grid-cols-2 gap-12 items-center p-8">
-            <div className="order-2 md:order-1 space-y-6">
-              <div className="inline-block px-4 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm font-semibold border border-orange-500/30">
-                Hackathon 2024
-              </div>
-              <h3 className="text-3xl md:text-4xl font-bold text-white">DEVOPS-FLOWTHON</h3>
-              <p className="text-gray-300 text-lg leading-relaxed">
-                A groundbreaking 24-hour devops hackathon that brought together over 300 brilliant minds to revolutionize continuous integration and deployment workflows. Participants built cutting-edge automated pipelines and cloud-native solutions that pushed the boundaries of modern DevOps practices.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-2 text-gray-400 bg-white/5 px-4 py-2 rounded-lg">
-                  <Users size={18} className="text-orange-500" />
-                  <span>300+ Participants</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-400 bg-white/5 px-4 py-2 rounded-lg">
-                  <Trophy size={18} className="text-orange-500" />
-                  <span>50+ Projects</span>
-                </div>
-              </div>
-            </div>
-            <div className="order-1 md:order-2 relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-              <div className="relative h-[300px] w-full bg-gray-800 rounded-2xl border border-white/10 overflow-hidden group-hover:transform group-hover:scale-[1.02] transition-all duration-300">
-                {/* Placeholder for Demo Picture */}
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-gray-500">
-                  <div className="text-center p-6">
-                    <div className="bg-white/5 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                      <Image1 className="w-10 h-10 text-gray-400" />
-                    </div>
-                    <p className="text-sm font-medium">Event Highlight Image</p>
-                    <p className="text-xs opacity-60 mt-1">1920x1080 Recommended</p>
-                  </div>
-                </div>
-                {/* <img src="/path/to/event-image.jpg" alt="DevOps Flowthon" className="absolute inset-0 w-full h-full object-cover" /> */}
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12"></div>
-
-          {/* Winners Section */}
-          <div className="mb-20">
-            <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-              <Trophy className="text-yellow-500" size={24} />
-              <span>2024 Winners</span>
-            </h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { place: '1st', team: 'CloudNinjas', college: 'IIT Bombay', members: ['Arjun K.', 'Priya S.', 'Rahul M.'], color: 'border-yellow-500/50 bg-yellow-500/5' },
-                { place: '2nd', team: 'AutoMaters', college: 'NIT Trichy', members: ['Sarah J.', 'Mike R.', 'David L.'], color: 'border-gray-400/50 bg-gray-400/5' },
-                { place: '3rd', team: 'PipelinePro', college: 'BITS Pilani', members: ['Neha G.', 'Varun P.', 'Amit K.'], color: 'border-orange-600/50 bg-orange-600/5' }
-              ].map((winner, idx) => (
-                <div key={idx} className={`relative bg-black/20 rounded-xl p-6 border ${winner.color} hover:-translate-y-1 transition-transform duration-300`}>
-                  <div className="absolute -top-3 -right-3 w-10 h-10 bg-gray-900 rounded-full border border-white/20 flex items-center justify-center text-lg font-bold text-white shadow-xl">
-                    {winner.place}
-                  </div>
-                  <h4 className="text-lg font-bold text-white mb-1">{winner.team}</h4>
-                  <p className="text-gray-400 text-xs mb-3">{winner.college}</p>
-                  <div className="space-y-2">
-                    <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Team Members</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {winner.members.map((member, mIdx) => (
-                        <span key={mIdx} className="text-xs text-gray-300 bg-white/5 px-2 py-1 rounded">
-                          {member}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12"></div>
-
-          {/* Gallery Section - Card Stack Animation */}
-          <GallerySection scrollContainerRef={boxRef} />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// Gallery Component with Infinite Scroll
-function GallerySection() {
-  const galleryImages = [
-    { src: Image, caption: "Hackathon 2024 Highlight" },
-    { src: Image, caption: "Team Collaboration" },
-    { src: Image, caption: "Coding Session" },
-    { src: Image, caption: "Mentorship Round" },
-    { src: Image, caption: "Prize Distribution" },
-  ];
-
-  return (
-    <div className="relative mt-20 flex flex-col items-center justify-center overflow-hidden rounded-md pb-20">
-      <h3 className="text-3xl md:text-5xl font-bold text-white mb-12 text-center">
-        Event Gallery
-      </h3>
-      <InfiniteMovingCards
-        items={galleryImages}
-        direction="right"
-        speed="slow"
-      />
-    </div>
-  );
-}
 
 export default function Home() {
   const canvasRef = useRef(null);
-  const [scrollY, setScrollY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const registrationUrl = "/registration";
   const navigate = useNavigate();
   useEffect(() => {
     setIsLoaded(true);
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -168,9 +52,9 @@ export default function Home() {
 
         const leftSide = this.x < canvas.width / 2;
         if (leftSide) {
-          this.color = { r: 80, g: 150, b: 255 };
+          this.color = { r: 80, g: 150, b: 255 }; // blue
         } else {
-          this.color = { r: 220, g: 80, b: 200 };
+          this.color = { r: 220, g: 80, b: 200 }; // pink
         }
       }
 
@@ -246,16 +130,13 @@ export default function Home() {
     navigate(path)
   };
 
-  return (
-    <div className={`relative overflow-hidden bg-transparent transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-      <div className="fixed top-0 left-0 w-full h-full -z-10">
-        <div
-          className="absolute top-0 left-0 w-full h-full"
-          style={{
-            background: 'linear-gradient(135deg, #0a1128 0%, #1a0a2e 25%, #2d1b4e 50%, #3d1e5c 75%, #4a1942 100%)'
-          }}
-        />
+  const handleRegistration = () => {
+    window.location.href = registrationUrl;
+  };
 
+  return (
+    <div className={`relative overflow-hidden transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} `}>
+      <div className="fixed top-0 left-0 w-full h-full -z-10 animated-gradient-bg">
         <canvas
           ref={canvasRef}
           className="absolute top-0 left-0 w-full h-full"
@@ -263,178 +144,319 @@ export default function Home() {
         />
       </div>
 
-      <FloatingNav
-        navItems={[
-          { name: 'About', link: '#about', icon: <FileText size={18} /> },
-          { name: 'Timeline', link: '#timeline', icon: <Clock size={18} /> },
-          { name: 'Prizes', link: '#prizes', icon: <Trophy size={18} /> },
-          { name: 'FAQ', link: '#faq', icon: <Target size={18} /> }
-        ]}
-        // actionButtons={
-        //   isAuthenticated ? (
-        //     <>
-        //       <button
-        //         onClick={() => handleNavigation('/registration')}
-        //         className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-full text-xs hover:brightness-110 transition-all"
-        //       >
-        //         Register
-        //       </button>
-        //       <button
-        //         onClick={async () => {
-        //           await logout();
-        //           navigate('/');
-        //         }}
-        //         className="bg-white/10 text-white p-2 rounded-full hover:bg-white/20 transition-all"
-        //         title="Logout"
-        //       >
-        //         <LogOut size={16} />
-        //       </button>
-        //     </>
-        //   ) : (
-        //     <>
-        //       <button
-        //         onClick={() => handleNavigation('/auth')}
-        //         className="px-4 py-2 text-white font-medium hover:text-orange-400 transition-colors text-sm"
-        //       >
-        //         Login
-        //       </button>
-        //       <button
-        //         onClick={() => handleNavigation('/registration')}
-        //         className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-full text-xs hover:brightness-110 transition-all"
-        //       >
-        //         Register
-        //       </button>
-        //     </>
-        //   )
-        // }
-      />
+      <Navbar />
 
-      <section className="relative min-h-screen flex items-center justify-center px-4 md:px-8 pt-20">
-        <div
-          style={{
-            transform: `translateY(${scrollY * 0.3}px)`,
-          }}
-          className="max-w-6xl mx-auto text-center [mask-image:linear-gradient(to_bottom,white_80%,transparent_100%)]"
-        >
-          <div className="inline-block px-4 py-2 bg-orange-500/20 border border-orange-500/40 rounded-full mb-6 backdrop-blur-sm">
-            <span className="text-orange-400 font-semibold text-sm">🚀 Applications Open Now</span>
-          </div>
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <FloatingElements />
 
-          <div className="mb-6">
-            <TypewriterEffect
-              words={[
-                { text: "Build.", className: "text-white" },
-                { text: "Innovate.", className: "text-white" },
-              ]}
-              className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight"
-            />
-            <TypewriterEffect
-              words={[
-                { text: "Transform", className: "bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent" },
-                { text: "Ideas", className: "bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent" },
-              ]}
-              className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight block mt-2"
-              delay={1.5}
-            />
-          </div>
+        {/* Radial gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-radial from-teal-500/5 via-transparent to-transparent" />
 
-          <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-            Join 500+ innovators in a 24-hour hackathon to solve real-world problems and win amazing prizes
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <button
-              onClick={() => handleNavigation('/registration')}
-              className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3"
+        <div className="container mx-auto px-4 py-20 relative z-10">
+          <motion.div
+            className="text-center max-w-5xl mx-auto"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* Badge */}
+            <motion.div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-500/30 bg-teal-500/10 mb-8"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
             >
-              <Users size={24} />
-              <span>Register Your Team</span>
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
-            </button>
+              <Rocket className="w-4 h-4 text-teal-400" />
+              <span className="text-sm text-teal-400 font-medium">Innovate • Create • Inspire</span>
+            </motion.div>
 
-            <button
-              onClick={() => handleNavigation('/statement')}
-              className="group px-8 py-4 bg-white/5 backdrop-blur-md text-white font-bold text-lg rounded-xl border-2 border-white/20 hover:bg-white/10 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3"
+            {/* Main Title */}
+            <motion.h1
+              className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <FileText size={24} />
-              <span>Problem Statements</span>
-            </button>
-          </div>
+              <span className="bg-gradient-to-r from-teal-300 via-cyan-400 to-teal-500 bg-clip-text text-transparent">UDHBAV</span>
+              <br />
+              <span className="text-white">2K26</span>
+            </motion.h1>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <HoverBorderGradient as="div" containerClassName="rounded-xl" className="bg-gray-900/50 flex flex-col items-center justify-center p-4 w-full h-full">
-              <div className="text-3xl font-bold text-white mb-1">500+</div>
-              <div className="text-sm text-gray-400">Participants</div>
-            </HoverBorderGradient>
-            <HoverBorderGradient as="div" containerClassName="rounded-xl" className="bg-gray-900/50 flex flex-col items-center justify-center p-4 w-full h-full">
-              <div className="text-3xl font-bold text-white mb-1">₹50K</div>
-              <div className="text-sm text-gray-400">Prize Pool</div>
-            </HoverBorderGradient>
-            <HoverBorderGradient as="div" containerClassName="rounded-xl" className="bg-gray-900/50 flex flex-col items-center justify-center p-4 w-full h-full">
-              <div className="text-3xl font-bold text-white mb-1">24hrs</div>
-              <div className="text-sm text-gray-400">Duration</div>
-            </HoverBorderGradient>
-            <HoverBorderGradient as="div" containerClassName="rounded-xl" className="bg-gray-900/50 flex flex-col items-center justify-center p-4 w-full h-full">
-              <div className="text-3xl font-bold text-white mb-1">10+</div>
-              <div className="text-sm text-gray-400">Problems</div>
-            </HoverBorderGradient>
+            {/* Tagline */}
+            <motion.p
+              className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              The Ultimate 24-Hour Hackathon Experience. Build the future with code, creativity, and collaboration.
+            </motion.p>
+
+            {/* Countdown */}
+            <motion.div
+              className="mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+            >
+              <p className="text-sm text-gray-500 uppercase tracking-widest mb-4">
+                Event Starts In
+              </p>
+              <CountdownTimer targetDate={new Date("2026-03-05T09:00:00")} />
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+            >
+              <Button
+                size="lg"
+                className="text-lg px-8 py-6 shadow-lg shadow-teal-500/25"
+                onClick={handleRegistration}
+              >
+                Register Now
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1 }}
+            >
+              {[
+                { value: "100+", label: "Participants" },
+                { value: "24H", label: "Duration" },
+                { value: "35K+", label: "In Prizes" },
+                { value: "20+", label: "Mentors" },
+              ].map((stat, i) => (
+                <div key={i} className="text-center">
+                  <div className="text-3xl md:text-4xl font-bold text-teal-400 drop-shadow-[0_0_15px_rgba(45,212,191,0.5)]">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-gray-500 uppercase tracking-wider mt-1">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Scroll indicator */}
+          <motion.div
+            className="absolute bottom-8 left-1/2 -translate-x-1/2"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <div className="w-6 h-10 rounded-full border-2 border-teal-500/50 flex items-start justify-center p-2">
+              <motion.div
+                className="w-1 h-2 bg-teal-500 rounded-full"
+                animate={{ opacity: [1, 0.5, 1], y: [0, 8, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="py-24 relative" id="about">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-teal-500/5 to-transparent" />
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              About <span className="bg-gradient-to-r from-teal-300 via-cyan-400 to-teal-500 bg-clip-text text-transparent">Udhbav</span>
+            </h2>
+            <p className="text-lg text-gray-400 max-w-3xl mx-auto mt-8">
+              Udhbav 2K25 is the flagship hackathon that brings together the brightest minds
+              to solve real-world problems through technology. Join us for 24 hours of innovation,
+              learning, and unforgettable experiences.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Code2,
+                title: "Build & Code",
+                description: "Create innovative solutions using cutting-edge technologies",
+              },
+              {
+                icon: Lightbulb,
+                title: "UI/UX Track (First Years)",
+                description: "Exclusive UI/UX track for first-year students with a 3-day hands-on workshop and hackathon.",
+              },
+              {
+                icon: Users,
+                title: "Team Up",
+                description: "Collaborate with like-minded developers and designers",
+              },
+              {
+                icon: Lightbulb,
+                title: "Innovate",
+                description: "Transform your ideas into working prototypes",
+              },
+              {
+                icon: Globe,
+                title: "Network",
+                description: "Connect with industry experts and potential employers",
+              },
+              {
+                icon: Cpu,
+                title: "Learn",
+                description: "Attend workshops and gain hands-on experience",
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 group hover:scale-105 hover:border-teal-500/30 transition-all duration-300"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="w-14 h-14 rounded-xl bg-teal-500/10 flex items-center justify-center mb-6 group-hover:bg-teal-500/20 transition-colors">
+                  <feature.icon className="w-7 h-7 text-teal-400" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-white">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-400">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section id="about" className="relative py-20 px-4 md:px-8 overflow-hidden">
-        <div className="max-w-6xl mx-auto relative z-10">
+      <section className="py-24 relative" id="tracks">
+        <div className="absolute inset-0 grid-pattern opacity-20" />
+
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
             className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-mono">
-              About VIDBHAV
-            </h2>
-            <div className="w-20 h-1 bg-green-500 mx-auto shadow-[0_0_10px_#22c55e]"></div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="grid md:grid-cols-2 gap-8 items-center"
+            transition={{ duration: 0.6 }}
           >
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div className="md:col-span-2 bg-white/5 backdrop-blur-md rounded-2xl p-2 border border-white/10 relative group overflow-hidden">
-                <img
-                  src={Image}
-                  alt="Sample"
-                  className="w-full h-90 md:h-[400px] object-cover rounded-xl shadow-2xl transition-all duration-500"
-                />
-
-              </div>
-            </div>
-
-
-            <div className="grid grid-cols-1 gap-4 h-full">
-              {[
-                { icon: <Calendar />, title: 'Event Date', desc: 'January 23-24, 2025' },
-                { icon: <MapPin />, title: 'Venue', desc: 'SRKR Engineering College' },
-                { icon: <Users />, title: 'Team Size', desc: '4-6 Members per Team' },
-                { icon: <Trophy />, title: 'Registration', desc: '₹850 per member' }
-              ].map((item, idx) => (
-                <HoverBorderGradient key={idx} as="div" containerClassName="rounded-xl h-full w-full" className="flex flex-row items-center gap-4 bg-gray-900/50 p-4 w-full h-full cursor-default group text-left justify-start">
-                  <div className="p-3 bg-orange-500/10 rounded-lg text-orange-500 group-hover:text-white group-hover:bg-orange-500 transition-colors shrink-0">
-                    {item.icon}
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold text-lg">{item.title}</div>
-                    <div className="text-gray-400 text-sm">{item.desc}</div>
-                  </div>
-                </HoverBorderGradient>
-              ))}
-            </div>
+            <h2 className="text-4xl md:text-5xl font-bold section-title mb-6">
+              Hackathon <span className="gradient-text">Tracks</span>
+            </h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto mt-8">
+              Choose your battlefield. Exciting tracks to showcase your skills.
+            </p>
           </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            {[
+              {
+                icon: Wifi,
+                title: "IoT Systems",
+                description: "Connect the physical world with the digital through smart sensors and connected devices.",
+                gradient: "from-teal-400 to-cyan-500",
+              },
+              {
+                icon: Globe,
+                title: "Web Development",
+                description: "Build immersive and responsive web experiences that define the future of the internet.",
+                gradient: "from-cyan-500 to-blue-500",
+              },
+              {
+                icon: Smartphone,
+                title: "App Development",
+                description: "Create powerful mobile applications that solve real-world problems on the go.",
+                gradient: "from-blue-500 to-indigo-500",
+              },
+              {
+                icon: Database,
+                title: "Web3 & Blockchain",
+                description: "Develop decentralized solutions and smart contracts for a transparent future.",
+                gradient: "from-indigo-500 to-purple-500",
+              },
+              {
+                icon: Bot,
+                title: "Agentic AI",
+                description: "Build autonomous AI agents capable of reasoning, planning, and executing complex tasks.",
+                gradient: "from-purple-500 to-pink-500",
+              },
+              {
+                icon: Cpu,
+                title: "Quantum Computing",
+                description: "Explore quantum algorithms, optimization, and the next generation of computing.",
+                gradient: "from-teal-300 to-cyan-500",
+              },
+              {
+                icon: Shield,
+                title: "Cyber Security",
+                description: "Protect digital assets and infrastructure with robust security solutions.",
+                gradient: "from-pink-500 to-rose-500",
+              },
+              {
+                icon: Brain,
+                title: "Machine Learning",
+                description: "Train intelligent models to discover patterns and make data-driven predictions.",
+                gradient: "from-rose-500 to-orange-500",
+              },
+            ].map((domain, index) => (
+              <motion.div
+                key={domain.title}
+                className="relative group cursor-pointer h-64"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="gradient-border h-full">
+                  <div className="gradient-border-inner p-8 flex flex-col items-center justify-center text-center h-full relative overflow-hidden">
+
+                    {/* Default State: Icon & Title */}
+                    <div className="transition-all duration-300 group-hover:-translate-y-2 group-hover:opacity-0 absolute inset-0 flex flex-col items-center justify-center p-8">
+                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${domain.gradient} flex items-center justify-center mb-6 shadow-lg shadow-black/50`}>
+                        <domain.icon className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="font-display text-2xl font-bold text-white">
+                        {domain.title}
+                      </h3>
+                    </div>
+
+                    {/* Hover State: Description Pop-up */}
+                    <div className="absolute inset-0 bg-slate-900/95 flex flex-col items-center justify-center p-6 text-center opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300">
+                      <h3 className={`font-display text-xl font-bold mb-3 bg-gradient-to-r ${domain.gradient} bg-clip-text text-transparent`}>
+                        {domain.title}
+                      </h3>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        {domain.description}
+                      </p>
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle at center, rgba(20, 184, 166, 0.2) 0%, transparent 70%)`,
+                    filter: "blur(20px)",
+                    zIndex: -1
+                  }}
+                />
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -443,184 +465,70 @@ export default function Home() {
         <Timeline
           data={[
             {
-              title: "08:30 AM",
-              content: (
-                <div className="space-y-4">
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Registration & Breakfast
-                  </p>
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Team check-in and networking
-                  </p>
-                </div>
-              ),
+              date: "FEB 5, 2025",
+              title: "Registration Opens",
+              content: "Start your hackathon journey with initial registration.",
             },
             {
-              title: "09:00 AM",
-              content: (
-                <div className="space-y-4">
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Opening Ceremony
-                  </p>
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Welcome address and problem statement reveal
-                  </p>
-                </div>
-              ),
+              date: "FEB 9-23, 2025",
+              title: "Idea Submission",
+              content: "Submit your problem statement ideas in the google form.",
             },
             {
-              title: "09:30 AM",
-              content: (
-                <div className="space-y-4">
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Hacking Begins
-                  </p>
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    24 hours of non-stop innovation
-                  </p>
-                </div>
-              ),
+              date: "FEB 23-28, 2025",
+              title: "Idea Presentation Deadline",
+              content: "Present your Idea for initial screening.No Eliminations",
             },
             {
-              title: "12:30 PM",
-              content: (
-                <div className="space-y-4">
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Lunch Break
-                  </p>
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Refresh and recharge
-                  </p>
-                </div>
-              ),
-            },
-            {
-              title: "08:00 PM",
-              content: (
-                <div className="space-y-4">
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Dinner & Checkpoint
-                  </p>
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Progress review with mentors
-                  </p>
-                </div>
-              ),
-            },
-            {
-              title: "11:00 AM",
-              content: (
-                <div className="space-y-4">
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Submission Deadline
-                  </p>
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Final submissions close
-                  </p>
-                </div>
-              ),
-            },
-            {
-              title: "02:00 PM",
-              content: (
-                <div className="space-y-4">
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Presentations
-                  </p>
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Teams pitch their solutions
-                  </p>
-                </div>
-              ),
-            },
-            {
-              title: "05:00 PM",
-              content: (
-                <div className="space-y-4">
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Award Ceremony
-                  </p>
-                  <p className="text-gray-200 text-xs md:text-sm font-normal">
-                    Winners announced!
-                  </p>
-                </div>
-              ),
+              date: "MAR 5-6, 2025",
+              title: "Hackathon",
+              content: "24 hours of non-stop innovation, coding, and building.",
             },
           ]}
         />
       </section>
 
-
-
-      <section id="prizes" className="relative py-20 px-4 md:px-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Prizes & Rewards</h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-orange-500 to-orange-600 mx-auto"></div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { place: '1st Place', prize: '₹15,000', icon: '🥇', color: 'from-yellow-400 to-yellow-600', shadow: 'shadow-yellow-500/20' },
-              { place: '2nd Place', prize: '₹10,000', icon: '🥈', color: 'from-gray-300 to-gray-500', shadow: 'shadow-gray-500/20' },
-              { place: '3rd Place', prize: '₹5,000', icon: '🥉', color: 'from-orange-500 to-orange-700', shadow: 'shadow-orange-500/20' }
-            ].map((prize, idx) => (
-              <div key={idx} className="relative group perspective-1000 h-full">
-                <HoverBorderGradient as="div" containerClassName="rounded-2xl h-full" className={`relative h-full bg-gray-900/60 backdrop-blur-xl rounded-2xl p-8 border border-white/10 text-center transition-all duration-500 transform group-hover:-translate-y-2 group-hover:scale-105 group-hover:border-white/20 group-hover:bg-white/5 ${prize.shadow} hover:shadow-2xl flex flex-col items-center w-full justify-center gap-6`}>
-                  <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">{prize.icon}</div>
-                  <h3 className="text-3xl font-bold text-white mb-2">{prize.place}</h3>
-                  <div className={`text-4xl font-bold bg-gradient-to-r ${prize.color} bg-clip-text text-transparent mb-6`}>
-                    {prize.prize}
-                  </div>
-                  <div className="py-3 px-4 bg-white/5 rounded-xl border border-white/5 group-hover:bg-white/10 transition-colors">
-                    <p className="text-gray-300 text-sm font-medium">+ Certificates & Goodies</p>
-                  </div>
-                </HoverBorderGradient>
-              </div>
-            ))}
-          </div>
+      <section className="relative py-24 px-4 md:px-8 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-teal-500/10 to-transparent" />
+        <div className="relative max-w-5xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white/5 border border-white/10 rounded-3xl px-8 md:px-12 py-12 backdrop-blur-md"
+          >
+            <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Ready to build something unforgettable?
+            </h3>
+            <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mb-8">
+              Join UDHBAV 2K26 for 24 hours of focused creation, rapid learning, and a community
+              that ships bold ideas. Your next breakthrough starts here.
+            </p>
+            <Button
+              size="lg"
+              className="text-lg px-10 py-6 shadow-lg shadow-teal-500/30 btn-glow font-display"
+              onClick={handleRegistration}
+            >
+              Register Now
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </motion.div>
         </div>
       </section>
 
-      {/* SECTION: Previous Events & Gallery */}
-      <PreviousEvents className="h-[500px]" />
 
-      <section className="relative py-20 px-4 md:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative group">
-            <HoverBorderGradient as="div" containerClassName="rounded-3xl mx-auto w-full" className="relative bg-gradient-to-r from-purple-900 to-pink-900 rounded-3xl p-12 text-center overflow-hidden w-full h-full">
-              <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
 
-              <div className="relative z-10 flex flex-col items-center">
-                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                  Ready to Innovate?
-                </h2>
-                <p className="text-purple-100 text-xl mb-10 max-w-2xl mx-auto">
-                  Don't miss this opportunity to showcase your skills, network with peers, and win amazing prizes!
-                </p>
-                <button
-                  onClick={() => handleNavigation('/registration')}
-                  className="px-10 py-5 bg-white text-purple-900 font-bold text-xl rounded-xl hover:bg-gray-100 transition-all transform hover:scale-105 hover:shadow-xl inline-flex items-center gap-3"
-                >
-                  <Users size={28} />
-                  <span>Register Your Team Now</span>
-                  <ArrowRight size={24} />
-                </button>
-              </div>
-            </HoverBorderGradient>
-          </div>
-        </div>
-      </section>
 
       <footer className="relative py-12 px-4 md:px-8 border-t border-white/10 bg-black/30">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg flex items-center justify-center">
                   <Zap className="text-white" size={24} />
                 </div>
-                <span className="text-white font-bold text-xl">VIDHBAV 2025</span>
+                <span className="text-white font-bold text-xl">UDHBAV 2026</span>
               </div>
               <p className="text-gray-400 text-sm">
                 Empowering innovation through collaborative problem-solving
@@ -641,7 +549,7 @@ export default function Home() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-gray-400">
                   <Mail size={16} />
-                  <span className="text-sm">info@vidhbav.com</span>
+                  <span className="text-sm">info@udhbav.com</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-400">
                   <Phone size={16} />
@@ -653,7 +561,7 @@ export default function Home() {
 
           <div className="pt-8 border-t border-white/10 text-center">
             <p className="text-gray-400 text-sm">
-              © 2024 VIDHBAV. All rights reserved.
+              © 2026 UDHBAV 2K26. All rights reserved.
             </p>
           </div>
         </div>
@@ -662,63 +570,5 @@ export default function Home() {
   );
 }
 
-const TypewriterEffect = ({
-  words,
-  className,
-  cursorClassName = "",
-  delay = 0
-}) => {
-  // split text into array of characters
-  const wordsArray = words.map((word) => {
-    return {
-      ...word,
-      text: word.text.split(""),
-    };
-  });
 
-  const [scope, animate] = useAnimate();
-  const isInView = useInView(scope);
 
-  useEffect(() => {
-    if (isInView) {
-      animate("span", {
-        display: "inline-block",
-        opacity: 1,
-        width: "fit-content",
-      }, {
-        duration: 0.3,
-        delay: stagger(0.1, { startDelay: delay }),
-        ease: "easeInOut",
-      });
-    }
-  }, [isInView, delay]);
-
-  const renderWords = () => {
-    return (
-      (<motion.div ref={scope} className="inline">
-        {wordsArray.map((word, idx) => {
-          return (
-            (<div key={`word-${idx}`} className="inline-block">
-              {word.text.map((char, index) => (
-                <motion.span
-                  initial={{
-                  }}
-                  key={`char-${index}`}
-                  className={`dark:text-white text-black opacity-0 hidden ${word.className}`}>
-                  {char}
-                </motion.span>
-              ))}
-              &nbsp;
-            </div>)
-          );
-        })}
-      </motion.div>)
-    );
-  };
-  return (
-    (<div
-      className={`text-center ${className}`}>
-      {renderWords()}
-    </div>)
-  );
-};

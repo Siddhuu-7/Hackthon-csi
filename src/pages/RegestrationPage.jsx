@@ -2,22 +2,27 @@ import React, { useEffect, useRef, useState } from 'react';
 import Registration from '../components/regestration';
 import PaymentSummary from '../components/Payment';
 import QrPayment from '../components/QrPaymet';
+
 export default function RegistrationPage() {
   const canvasRef = useRef(null);
-  const [formdata,setformData]=useState(null)
-  const [back,setBack]=useState(true)
-    useEffect(() => {
-  setformData(prev => ({
-    ...prev,
-    teamcode: `TEAM-${Date.now()}`
-  }));
-}, []);
-   const goback=()=>{
-      setBack(!back)
-    }
-    const goToPayment=()=>{
-      setBack(!back)
-    }
+  const [formdata, setformData] = useState(null);
+  const [back, setBack] = useState(true);
+
+  useEffect(() => {
+    setformData(prev => ({
+      ...prev,
+      teamcode: `TEAM-${Date.now()}`
+    }));
+  }, []);
+
+  const goback = () => {
+    setBack(!back);
+  };
+
+  const goToPayment = () => {
+    setBack(!back);
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -43,13 +48,8 @@ export default function RegistrationPage() {
         this.speedY = (Math.random() - 0.5) * 0.4;
         this.opacity = Math.random() * 0.5 + 0.3;
         
-        const leftSide = this.x < canvas.width / 2;
-        
-        if (leftSide) {
-          this.color = { r: 80, g: 150, b: 255 }; // Blue
-        } else {
-          this.color = { r: 220, g: 80, b: 200 }; // Pink
-        }
+        // Updated to cyan/teal color scheme to match the theme
+        this.color = { r: 34, g: 211, b: 238 }; // Cyan (#22d3ee)
       }
 
       update() {
@@ -167,32 +167,36 @@ export default function RegistrationPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
+      {/* Updated dark navy/teal background gradient */}
       <div 
         className="absolute top-0 left-0 w-full h-full"
         style={{
-          background: 'linear-gradient(135deg, #0a1128 0%, #1a0a2e 25%, #2d1b4e 50%, #3d1e5c 75%, #4a1942 100%)'
+          background: 'linear-gradient(135deg, #0a1929 0%, #0f2234 25%, #132838 50%, #0e1f2d 75%, #0a1520 100%)'
         }}
       />
       
+      {/* Particle canvas with cyan/teal particles */}
       <canvas
         ref={canvasRef}
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
         style={{ mixBlendMode: 'screen' }}
       />
       
+      {/* Subtle radial gradient overlay */}
       <div 
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%)'
+          background: 'radial-gradient(ellipse at center, rgba(34, 211, 238, 0.05) 0%, transparent 70%)'
         }}
       />
       
       <div className="relative z-10 p-4 md:p-8">
         <div className="max-w-5xl mx-auto">
-           {
-            formdata!==null&&!back?<PaymentSummary formData={formdata} goback={goback} />
-:<Registration setform={setformData} onsubmit={goToPayment}/>
-           }
+          {
+            formdata !== null && !back ? 
+              <PaymentSummary formData={formdata} goback={goback} /> :
+              <Registration setform={setformData} onsubmit={goToPayment} />
+          }
         </div>
       </div>
     </div>
