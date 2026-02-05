@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { X, Users, CheckCircle, Plus, MoveRight, MoveLeft, XCircle } from 'lucide-react';
-import { replace, useNavigate } from 'react-router-dom';
-import axios from "axios"
-import { useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import { Users, CheckCircle, Plus, MoveRight, MoveLeft, XCircle, Trash, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
-export default function Registration({setform,onsubmit}) {
-
-const [teamStatus, setTeamStatus] = useState(null); 
-const [checking, setChecking] = useState(false);
-
+export default function Registration({setform, onsubmit}) {
+  const navigate = useNavigate();
+  const [teamStatus, setTeamStatus] = useState(null); 
+  const [checking, setChecking] = useState(false);
+  const [checkingLeadCsi, setCheckingLeadCsi] = useState(false);
+  const [leadCsiChecked, setLeadCsiChecked] = useState(false);
 
   const [formData, setFormData] = useState({
-    teamcode:`${ Date.now()}`,
+    teamcode: null,
     teamName: '',
     collegeType: 'srkr',
     otherCollege: '',
     teamLead: {
       name: '',
-      gender:"",
+      gender: "",
       email: '',
       mobile: '',
       department: '',
       year: '1st Year',
       location: '',
       tshirtSize: '',
-      isCsi:null,
-      price:"",
-      transactionId:""
+      isCsi: null,
+      price:"600",
+      transactionId: ""
     },
     teamMembers: []
   });
@@ -40,22 +40,23 @@ const [checking, setChecking] = useState(false);
           {
             id: Date.now(),
             name: '',
-            gender:"",
+            gender: "",
             email: '',
             mobile: '',
             department: '',
             year: '1st Year',
             tshirtSize: '',
-            location:'',
-            isCsi:null,
-            price:""
-
+            location: '',
+            isCsi: null,
+            price: "600",
+            checkingCsi: false,
+            csiChecked: false
           }
         ]
       });
     }
   };
-  const navigate=useNavigate()
+
   const deleteTeamMember = (id) => {
     setFormData({
       ...formData,
@@ -74,7 +75,6 @@ const [checking, setChecking] = useState(false);
   };
 
   const updateTeamMember = (id, field, value) => {
-    console.log(field,value)
     setFormData({
       ...formData,
       teamMembers: formData.teamMembers.map(member =>
@@ -83,81 +83,169 @@ const [checking, setChecking] = useState(false);
     });
   };
 
-  useEffect(() => {
-  if (!formData.teamName.trim()) {
-    setTeamStatus(null);
-    return;
-  }
-
-  const timer = setTimeout(async () => {
+  const isCSi = async (mobileNumber, email) => {
     try {
-      setChecking(true);
       const res = await axios.get(
-        `http://localhost:6961/check-team-name?name=${formData.teamName}`
+        `https://hackthon-backend-1-d2zj.onrender.com/verify?mobileNumber=${mobileNumber}&email=${email}`
       );
-      setTeamStatus(res.data.available);
-    } catch (err) {
-      setTeamStatus(null);
-    } finally {
-      setChecking(false);
+      return res.data.found;
+    } catch (error) {
+      console.error(error);
+      return false;
     }
-  }, 600); 
+  };
 
-  return () => clearTimeout(timer);
-}, [formData.teamName]);
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleTeamLeadCsiCheck = async () => {
+    if (!formData.teamLead.email || !formData.teamLead.mobile) {
+      alert("Please enter email and mobile number first");
+      return;
+    }
 
-  try {
-    // const res = await axios.post(
-    //   "http://localhost:6961/reg",
-    //   formData
-    // );
+    setCheckingLeadCsi(true);
 
-    // console.log("Backend response:", res.data);
-    localStorage.setItem("formdata", JSON.stringify(formData));
+    try {
+      const found = await isCSi(formData.teamLead.mobile, formData.teamLead.email);
+      
+      setFormData(prev => ({
+        ...prev,
+        teamLead: {
+          ...prev.teamLead,
+          isCsi: found,
+          price: found ? "600" : "600"
+        }
+      }));
 
-    setform(formData);   
-    onsubmit();          
+      setLeadCsiChecked(true);
+    } catch (error) {
+      console.error("CSI verification failed:", error);
+      alert("Failed to verify CSI membership. Please try again.");
+    } finally {
+      setCheckingLeadCsi(false);
+    }
+  };
 
-  } catch (error) {
-    console.error("Registration failed:", error);
-    alert(error.response.data.msg);
-  }
-};
-useEffect(() => {
-  const saved = localStorage.getItem("formdata");
-  if (saved) {
-    setFormData(JSON.parse(saved));
-  }
-}, []);
+  const handleMemberCsiCheck = async (memberId) => {
+    const member = formData.teamMembers.find(m => m.id === memberId);
+    
+    if (!member.email || !member.mobile) {
+      alert("Please enter email and mobile number first");
+      return;
+    }
 
-const isCSi=(email,name)=>{
+    // Set checking state for this specific member
+    setFormData(prev => ({
+      ...prev,
+      teamMembers: prev.teamMembers.map(m =>
+        m.id === memberId ? { ...m, checkingCsi: true } : m
+      )
+    }));
 
-}
+    try {
+      const found = await isCSi(member.mobile, member.email);
+      
+      setFormData(prev => ({
+        ...prev,
+        teamMembers: prev.teamMembers.map(m =>
+          m.id === memberId 
+            ? { 
+                ...m, 
+                isCsi: found, 
+                price: found ? "600" : "600",
+                checkingCsi: false,
+                csiChecked: true
+              } 
+            : m
+        )
+      }));
+    } catch (error) {
+      console.error("CSI verification failed:", error);
+      alert("Failed to verify CSI membership. Please try again.");
+      
+      setFormData(prev => ({
+        ...prev,
+        teamMembers: prev.teamMembers.map(m =>
+          m.id === memberId ? { ...m, checkingCsi: false } : m
+        )
+      }));
+    }
+  };
+
+  // Team name availability check
+  useEffect(() => {
+    if (!formData.teamName.trim()) {
+      setTeamStatus(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setChecking(true);
+        const res = await axios.get(
+          `https://hackthon-backend-1-d2zj.onrender.com/check-team-name?name=${formData.teamName}`
+        );
+        setTeamStatus(res.data.available);
+      } catch (err) {
+        setTeamStatus(null);
+      } finally {
+        setChecking(false);
+      }
+    }, 600); 
+
+    return () => clearTimeout(timer);
+  }, [formData.teamName]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const totalMembers = formData.teamMembers.length + 1; 
+    
+    if (totalMembers < 4 || totalMembers > 6) {
+      alert("Team must have minimum 4 and maximum 6 members (including team lead)");
+      return;
+    }
+
+    try {
+      localStorage.setItem("formdata", JSON.stringify(formData));
+      
+      setform(formData);   
+      onsubmit();          
+    } catch (error) {
+      console.error("Registration failed:", error);
+      alert(error.response?.data?.msg || "Registration failed");
+    }
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem("formdata");
+    if (saved) {
+      setFormData(JSON.parse(saved));
+    }
+  }, []);
+
+  const totalMembers = formData.teamMembers.length + 1;
+  const isPaymentEnabled = totalMembers >= 4 && totalMembers <= 6;
+
   return (
     <div className="w-full">
       <div className="max-w-4xl mx-auto">
         <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-4 md:p-6 lg:p-8">
           <div className="mb-6 md:mb-8">
-            <h1 className="flex items-center gap-3 text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 bg-gradient-to-r from-[#0f2027] via-[#1d2a38] to-[#203a43] bg-clip-text  animate-gradient">
-  <button
-  onClick={() => navigate(-1)}
-  className="p-2 rounded-full bg-black/10 hover:bg-black/20 transition"
->
-  <MoveLeft size={24} />
-</button>
-
-
-  Team Registration
-</h1>
-
+            <h1 className="flex items-center gap-3 text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 bg-gradient-to-r from-[#0f2027] via-[#1d2a38] to-[#203a43] bg-clip-text animate-gradient">
+              <button
+                onClick={() => navigate(-1)}
+                className="p-2 rounded-full bg-black/10 hover:bg-black/20 transition"
+              >
+                <MoveLeft size={24} />
+              </button>
+              Team Registration
+            </h1>
             <p className="text-gray-600 text-sm md:text-base lg:text-lg">
               Enter the Team Lead details and add team members. Minimum 4 members total (including team lead), maximum 6 members total.
             </p>
           </div>
 
           <div className="space-y-4 md:space-y-6">
+            {/* Team Information */}
             <div className="bg-white rounded-xl shadow-md p-4 md:p-6 border-l-4 transition-all duration-300 hover:shadow-lg" style={{ borderColor: '#0f2027' }}>
               <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
                 <Users className="animate-pulse" style={{ color: '#d97706' }} size={24} />
@@ -168,41 +256,55 @@ const isCSi=(email,name)=>{
 
               <div className="space-y-4">
                 <div>
-  <label className="block text-sm font-semibold mb-2 text-gray-700">
-    Team Name <span className="text-red-500">*</span>
-  </label>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">
+                    Team Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter your team name"
+                    value={formData.teamName}
+                    onChange={(e) => {
+                      const teamName = e.target.value;
+                      setFormData({
+                        ...formData,
+                        teamName,
+                        teamcode: `${teamName}-${Date.now()}`
+                      });
+                    }}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
+                  />
+                  {checking && (
+                    <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
+                      <Loader2 className="animate-spin" size={14} />
+                      Checking availability...
+                    </p>
+                  )}
+                  {!checking && teamStatus === true && (
+                    <p className="flex items-center gap-1 text-sm text-green-600 mt-1">
+                      <CheckCircle size={16} />
+                      <span>Team name is available</span>
+                    </p>
+                  )}
+                  {!checking && teamStatus === false && (
+                    <p className="flex items-center gap-1 text-sm text-red-600 mt-1">
+                      <XCircle size={16} />
+                      Team name already taken
+                    </p>
+                  )}
+                </div>
 
-  <input
-    type="text"
-    placeholder="Enter your team name"
-    value={formData.teamName}
-    onChange={(e) =>
-      setFormData({ ...formData, teamName: e.target.value })
-    }
-    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg
-               focus:border-[#203a43] focus:outline-none transition-all
-               duration-300 bg-gray-50 hover:bg-white"
-  />
-
-  {checking && (
-    <p className="text-sm text-gray-500 mt-1">Checking availability...</p>
-  )}
-
-  {!checking && teamStatus === true && (
-   <p className="flex items-center gap-1 text-sm text-green-600 mt-1">
-  <CheckCircle size={16} />
-  <span>Team name is available</span>
-</p>
-
-  )}
-
-  {!checking && teamStatus === false && (
-    <p className=" flex items-center gap-1 text-sm text-red-600 mt-1">
-      <XCircle size={16}/> Team name already taken
-    </p>
-  )}
-</div>
-
+                <div>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">
+                    Team Code <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Your Team Code"
+                    value={formData.teamcode || ''}
+                    onChange={(e) => setFormData({ ...formData, teamcode: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
+                  />
+                </div>
 
                 <div className="space-y-3">
                   <label className="block text-sm font-semibold text-gray-700">
@@ -247,23 +349,50 @@ const isCSi=(email,name)=>{
               </div>
             </div>
 
+            {/* Team Lead */}
             <div className="bg-white rounded-xl shadow-md p-4 md:p-6 border-l-4 transition-all duration-300 hover:shadow-lg" style={{ borderColor: '#1d2a38' }}>
-              <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+              <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-4 md:mb-6">
                 <CheckCircle className="animate-pulse" style={{ color: '#d97706' }} size={24} />
                 <h2 className="text-xl md:text-2xl font-bold" style={{ color: '#d97706' }}>
                   Team Lead
                 </h2>
-                <span className="ml-auto inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
-                {
-                 "-/₹850"
-                }
+                
+                {/* <label className="inline-flex items-center cursor-pointer ml-auto">
+                  <input 
+                    type="checkbox" 
+                    checked={formData.teamLead.isCsi === true}
+                    onChange={handleTeamLeadCsiCheck}
+                    disabled={checkingLeadCsi || leadCsiChecked}
+                    className="sr-only peer"
+                  />
+                  <div className={`relative w-9 h-5 border rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-disabled:opacity-50 peer-disabled:cursor-not-allowed peer-focus:outline-none peer-focus:ring-2 ${
+                    leadCsiChecked 
+                      ? (formData.teamLead.isCsi 
+                          ? 'bg-green-600 border-green-600 peer-focus:ring-green-300' 
+                          : 'bg-red-600 border-red-600 peer-focus:ring-red-300')
+                      : 'bg-gray-300 border-gray-400 peer-focus:ring-gray-300'
+                  }`}></div>
+                  <span className="select-none ms-3 text-sm font-medium text-gray-700">
+                    {checkingLeadCsi ? (
+                      <span className="flex items-center gap-1">
+                        <Loader2 className="animate-spin" size={14} />
+                        Verifying...
+                      </span>
+                    ) : (
+                      'CSI Member?'
+                    )}
                   </span>
+                </label>*/
+                
+                <span className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
+                  ₹{formData.teamLead.price}
+                </span> }
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 <div>
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    Team Lead Name <span className="text-red-500">*</span>
+                    Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -273,9 +402,10 @@ const isCSi=(email,name)=>{
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                   />
                 </div>
-                 <div>
+                
+                <div>
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    gender <span className="text-red-500">*</span>
+                    Gender <span className="text-red-500">*</span>
                   </label>
                   <select 
                     value={formData.teamLead.gender}
@@ -285,13 +415,12 @@ const isCSi=(email,name)=>{
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
-                    
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    Team Lead Email ID <span className="text-red-500">*</span>
+                    Email ID <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -304,7 +433,7 @@ const isCSi=(email,name)=>{
 
                 <div>
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    Team Lead Mobile No <span className="text-red-500">*</span>
+                    Mobile No <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
@@ -388,66 +517,66 @@ const isCSi=(email,name)=>{
                     <option value="XXL">XXL</option>
                   </select>
                 </div>
-                
-                    {/* <label className="inline-flex items-center cursor-pointer">
-                      <input type="checkbox" value={"Yes"} 
-                     onChange={(e) => {
-                      updateTeamLead("isCsi",e.target.checked);
-                     }}
-                      className="sr-only peer"/>
-                      <div
-                  className="
-                    relative w-9 h-5
-                    bg-neutral-quaternary
-                    border border-gray-400
-                    peer-focus:outline-none
-                    peer-focus:ring-2 peer-focus:ring-brand-soft
-                    rounded-full
-                    peer-checked:after:translate-x-full
-                    rtl:peer-checked:after:-translate-x-full
-                    after:content-['']
-                    after:absolute after:top-[2px] after:start-[2px]
-                    after:bg-black after:rounded-full after:h-4 after:w-4
-                    after:transition-all
-                    peer-checked:bg-brand
-                    peer-checked:border-brand
-                  "
-                ></div>
-
-                      <span className="select-none ms-3 text-sm font-medium text-heading">Are You CSi Member?</span>
-                    </label> */}
-
               </div>
             </div>
 
+            {/* Team Members */}
             {formData.teamMembers.map((member, index) => (
               <div key={member.id} className="bg-white rounded-xl shadow-md p-4 md:p-6 border-l-4 transition-all duration-300 hover:shadow-lg animate-slideIn" style={{ borderColor: '#203a43' }}>
-                <div className="flex items-center justify-between mb-4 md:mb-6">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-4 md:mb-6">
                   <div className="flex items-center gap-2 md:gap-3">
                     <Users style={{ color: '#d97706' }} size={24} />
                     <h2 className="text-xl md:text-2xl font-bold" style={{ color: '#d97706' }}>
                       Team Member {index + 1}
                     </h2>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => deleteTeamMember(member.id)}
-                    className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-                  >
-                    <X size={20} />
-                  </button>
-                 <span className="ml-auto inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
-  {
-    "/850"
-  }
-</span>
-
+                  
+                  <div className="flex items-center gap-2">
+                    {/* <label className="inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox"
+                        checked={member.isCsi === true}
+                        onChange={() => handleMemberCsiCheck(member.id)}
+                        disabled={member.checkingCsi || member.csiChecked}
+                        className="sr-only peer"
+                      />
+                      <div className={`relative w-9 h-5 border rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-disabled:opacity-50 peer-disabled:cursor-not-allowed peer-focus:outline-none peer-focus:ring-2 ${
+                        member.csiChecked 
+                          ? (member.isCsi 
+                              ? 'bg-green-600 border-green-600 peer-focus:ring-green-300' 
+                              : 'bg-red-600 border-red-600 peer-focus:ring-red-300')
+                          : 'bg-gray-300 border-gray-400 peer-focus:ring-gray-300'
+                      }`}></div>
+                      <span className="select-none ms-3 text-sm font-medium text-gray-700">
+                        {member.checkingCsi ? (
+                          <span className="flex items-center gap-1">
+                            <Loader2 className="animate-spin" size={14} />
+                            Verifying...
+                          </span>
+                        ) : (
+                          'CSI Member?'
+                        )}
+                      </span>
+                    </label> */}
+                    
+                    <span className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">
+                      ₹{member.price}
+                    </span>
+                    
+                    <button
+                      type="button"
+                      onClick={() => deleteTeamMember(member.id)}
+                      className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
+                    >
+                      <Trash size={20} />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                   <div>
                     <label className="block text-sm font-semibold mb-2 text-gray-700">
-                      Member Name <span className="text-red-500">*</span>
+                      Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -457,21 +586,22 @@ const isCSi=(email,name)=>{
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                     />
                   </div>
-<div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    gender <span className="text-red-500">*</span>
-                  </label>
-                  <select 
-                    value={member.gender}
-                    onChange={(e) => updateTeamMember(member.id,'gender', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    
-                  </select>
-                </div>
+                  
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">
+                      Gender <span className="text-red-500">*</span>
+                    </label>
+                    <select 
+                      value={member.gender}
+                      onChange={(e) => updateTeamMember(member.id, 'gender', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white cursor-pointer"
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                  
                   <div>
                     <label className="block text-sm font-semibold mb-2 text-gray-700">
                       Email ID <span className="text-red-500">*</span>
@@ -558,37 +688,24 @@ const isCSi=(email,name)=>{
                       <option value="XXL">XXL</option>
                     </select>
                   </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    Location
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Bhimavaram, Andhra Pradesh"
-                    value={member.location}
-                    onChange={(e) => updateTeamMember(member.id,"location",e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
-                  />
-                </div>
-                {/* <label className="inline-flex items-center cursor-pointer">
-                      <input type="checkbox" value={"Yes"} 
-                     onChange={(e) => {
-                      updateTeamMember(member.id,"isCsi",e.target.checked)
-                      updateTeamMember(member.id,"price",e.target.checked?"750":"850")
-                     }}
-                      className="sr-only peer"/>
-                      <div className="relative w-9 h-5 bg-neutral-quaternary peer-focus:outline-none peer-focus:ring-4 
-                      peer-focus:ring-brand-soft dark:peer-focus:ring-brand-soft rounded-full peer peer-checked:after:translate-x-full
-                       rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] 
-                       after:absolute after:top-[2px] after:start-[2px] 
-                       after:bg-black after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
-                      <span className="select-none ms-3 text-sm font-medium text-heading">Are You CSi Member?</span>
-                    </label> */}
                   
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">
+                      Location
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Bhimavaram, Andhra Pradesh"
+                      value={member.location}
+                      onChange={(e) => updateTeamMember(member.id, "location", e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
+                    />
+                  </div>
                 </div>
               </div>
             ))}
 
+            {/* Add Team Member Button */}
             <div className="flex justify-center">
               <button
                 type="button"
@@ -607,18 +724,41 @@ const isCSi=(email,name)=>{
               </button>
             </div>
 
+            {/* Team Size Warning */}
+            {!isPaymentEnabled && (
+              <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <XCircle className="text-amber-600" size={20} />
+                  <p className="text-amber-800 text-sm font-medium">
+                    {totalMembers < 4 
+                      ? `Please add ${4 - totalMembers} more member${4 - totalMembers > 1 ? 's' : ''} (Total members: ${totalMembers}/4 minimum)`
+                      : `Maximum 6 members allowed (Current: ${totalMembers})`
+                    }
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Payment Button */}
             <button
               type="button"
               onClick={handleSubmit}
-              className="w-full flex items-center justify-center gap-2 py-3 md:py-4 text-white font-bold text-base md:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:brightness-110"
+              disabled={!isPaymentEnabled}
+              className="w-full flex items-center justify-center gap-2 py-3 md:py-4 text-white font-bold text-base md:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:brightness-100"
               style={{
-                background: 'linear-gradient(135deg, #0f2027, #1d2a38, #203a43)',
+                background: isPaymentEnabled 
+                  ? 'linear-gradient(135deg, #0f2027, #1d2a38, #203a43)' 
+                  : 'linear-gradient(135deg, #9ca3af, #6b7280, #4b5563)',
               }}
             >
               <MoveRight className="w-5 h-5 md:w-6 md:h-6" />
-              <span>Payment</span>
+              <span>
+                {isPaymentEnabled 
+                  ? 'Proceed to Payment' 
+                  : `Payment (${totalMembers}/4-6 members)`
+                }
+              </span>
             </button>
-
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ export default function QrPayment() {
 async function handelpayment(){
 try {
   window.open(
-  `https://hackthon-backend-jnlm.onrender.com/payment?teamName=${teamName}`,
+  `https://hackthon-backend-1-d2zj.onrender.com/payment?teamName=${teamName}`,
   "_blank"
 );
 } catch (error) {

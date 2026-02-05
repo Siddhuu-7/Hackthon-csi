@@ -3,8 +3,8 @@ import { Users, CreditCard, CheckCircle, IndianRupee, ArrowLeft } from "lucide-r
 import axios from "axios"
 export default function PaymentSummary({ formData ,goback}) {
   if (!formData) return null;
-  const TEAM_LEAD_CSI_PRICE = 750;
-  const TEAM_LEAD_NON_CSI_PRICE = 850;
+  const TEAM_LEAD_CSI_PRICE = 600;
+  const TEAM_LEAD_NON_CSI_PRICE = 600;
 const [loading, setLoading] = useState(false);
 
   const teamLeadAmount = formData.teamLead.isCsi
@@ -28,7 +28,7 @@ const handlePayment = async () => {
 
   try {
     const res = await axios.post(
-      "https://hackthon-backend-jnlm.onrender.com/reg",
+      "https://hackthon-backend-1-d2zj.onrender.com/reg",
       formData
     );
 
@@ -41,12 +41,20 @@ const handlePayment = async () => {
     }
 
     console.log("Backend response:", res.data);
-  } catch (error) {
-    console.error("Registration failed:", error);
+  } catch (errors) {
+    console.error(errors.response.data.msg)
+    const data = errors?.response?.data;
 
-    alert(
-      error?.response?.data?.msg || "Registration failed"
-    );
+alert(
+  Array.isArray(data?.errors)
+    ? data.errors.join(", ")
+    : typeof data?.message === "string"
+    ? data.message
+    : typeof data?.msg === "string"
+    ? data.msg
+    : "Registration failed Check All Fields Once "
+);
+
   } finally {
     setLoading(false); // always reset
   }
@@ -178,9 +186,7 @@ const handlePayment = async () => {
                     <IndianRupee size={32} />
                     <span>{totalAmount}</span>
                   </div>
-                  <p className="text-white/60 text-sm mt-1">
-                    CSI ₹750 • Non-CSI ₹850
-                  </p>
+                  
                 </div>
 
                <button

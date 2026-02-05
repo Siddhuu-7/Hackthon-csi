@@ -11,7 +11,7 @@ export default function AdminPage() {
   const fetchTeams = async () => {
     try {
       setLoading(true)
-      const res = await axios.get("https://hackthon-backend-jnlm.onrender.com/admin/teams")
+      const res = await axios.get("https://hackthon-backend-1-d2zj.onrender.com/admin/teams")
       setData(res.data)
     } catch (error) {
       console.error("Failed to fetch teams:", error)
@@ -25,7 +25,7 @@ export default function AdminPage() {
   }, [])
 
   const verifyTeam = async (teamcode) => {
-    await axios.post("http://localhost:6961/admin/verify", { teamcode })
+    await axios.post("http://localhost:6961/admin/verify", {teamcode} )
     fetchTeams()
   }
 
