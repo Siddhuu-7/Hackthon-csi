@@ -38,7 +38,6 @@ export default function AdminPage() {
   const failedteams = data.filter((team) => team.paymentStatus === "FAILED")
   const Pendingteams = data.filter((team) => team.paymentStatus === "PENDING")
 
-  // Calculate total amount from verified teams
   const totalCollected = verifiedTeams.reduce((sum, team) => sum + calculateTotalAmount(team), 0)
 
   return (
@@ -96,6 +95,7 @@ export default function AdminPage() {
                         <th className="px-4 py-3">Lead Mobile</th>
                         <th className="px-4 py-3 text-center">Members</th>
                         <th className="px-4 py-3">Transaction ID</th>
+                        <th className="px-4 py-3">Time Stamp</th>
                         <th className="px-4 py-3 text-right">Amount</th>
                         <th className="px-4 py-3 text-center">Actions</th>
                       </tr>
@@ -115,6 +115,7 @@ export default function AdminPage() {
                             <td className="px-4 py-3 text-gray-600">{team.teamLead.mobile}</td>
                             <td className="px-4 py-3 text-center text-gray-600">{1 + team.teamMembers.length}</td>
                             <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.transactionId}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.createdAt}</td>
                             <td className="px-4 py-3 text-right font-semibold text-gray-900">
                               ₹{calculateTotalAmount(team)}
                             </td>
