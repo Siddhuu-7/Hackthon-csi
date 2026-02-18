@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import calculateTotalAmount from "../utils/totalAmount"
-
+import { useSearchParams } from "react-router-dom"
 export default function AdminPage() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
+const [searchParams] = useSearchParams();
+  const [singeldata, setsingelData] = useState([])
 
-  const fetchTeams = async () => {
+  const fetchTeams = async (adminCode) => {
     try {
       setLoading(true)
-      const res = await axios.get("https://hackthon-backend-1-d2zj.onrender.com/admin/teams")
+      const res = await axios.get(`https://hackthon-backend-1-d2zj.onrender.com/admin/teams?adminCode=${adminCode}`)
       
       setData(res.data)
     } catch (error) {
@@ -18,28 +20,107 @@ export default function AdminPage() {
       setLoading(false)
     }
   }
+  const fetchSingels = async (adminCode) => {
+    try {
+      setLoading(true)
+      const res = await axios.get(`https://hackthon-backend-1-d2zj.onrender.com/admin/singels?adminCode=${adminCode}`)
+      setsingelData(res.data)
+    } catch (error) {
+      console.error("Failed to fetch teams:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+ useEffect(() => {
+    let adminCode = sessionStorage.getItem("adminCode");
+    if (!adminCode) {
+      adminCode = window.prompt("Enter Admin Code:");
 
-  useEffect(() => {
-    fetchTeams()
-  }, [])
-
+      if (!adminCode) {
+        alert("Admin code is required!");
+        return;
+      }
+      sessionStorage.setItem("adminCode", adminCode);
+    }
+    fetchTeams(adminCode);
+    fetchSingels(adminCode);
+  }, []);
+  
   const verifyTeam = async (teamName) => {
-    await axios.post("https://hackthon-backend-1-d2zj.onrender.com/payment/paid", {teamName} )
-    fetchTeams()
+    let adminCode = sessionStorage.getItem("adminCode");
+    await axios.post(`https://hackthon-backend-1-d2zj.onrender.com/payment/paid?adminCode=${adminCode}`, {teamName} )
+    fetchTeams(adminCode)
+    fetchSingels(adminCode)
   }
-
   const markFraud = async (teamName) => {
-    await axios.post("https://hackthon-backend-1-d2zj.onrender.com/payment/failed", { teamName })
-    fetchTeams()
+    let adminCode = sessionStorage.getItem("adminCode");
+    await axios.post(`https://hackthon-backend-1-d2zj.onrender.com/payment/failed?adminCode=${adminCode}`, { teamName })
+    fetchTeams(adminCode)
+    fetchSingels(adminCode)
+  }
+    const verifysingel = async (name,_id) => {
+    let adminCode = sessionStorage.getItem("adminCode");
+    await axios.post(`https://hackthon-backend-1-d2zj.onrender.com/admin/payment/paid?adminCode=${adminCode}`, {name,_id,} )
+    fetchTeams(adminCode)
+    fetchSingels(adminCode)
+  }
+  const marksingelFraud = async (name,_id) => {
+    let adminCode = sessionStorage.getItem("adminCode");
+    await axios.post(`https://hackthon-backend-1-d2zj.onrender.com/admin/payment/failed?adminCode=${adminCode}`, { name,id })
+    fetchTeams(adminCode)
+    fetchSingels(adminCode)
   }
 
-  const pendingTeams = data.filter((team) => team.paymentStatus === "DONE")
-  const verifiedTeams = data.filter((team) => team.paymentStatus === "PAID")
-  const failedteams = data.filter((team) => team.paymentStatus === "FAILED")
-  const Pendingteams = data.filter((team) => team.paymentStatus === "PENDING")
 
-  const totalCollected = verifiedTeams.reduce((sum, team) => sum + calculateTotalAmount(team), 0)
+  let pendingTeams = data.filter((team) => team.paymentStatus === "DONE")
+  let verifiedTeams = data.filter((team) => team.paymentStatus === "PAID")
+  let failedteams = data.filter((team) => team.paymentStatus === "FAILED")
+  let Pendingteams = data.filter((team) => team.paymentStatus === "PENDING")
+ 
+const parsedSingles = singeldata.map(member => ({
+  _id:member._id,
+    teamcode: `SINGLE-${member.mobile}`,
+  teamName: member.name,
+  teamLead: {
+    name: member.name,
+    mobile: member.mobile
+  },
+  teamMembers: [],
+  transactionId: member.transactionId,
+  paymentStatus: member.paymentStatus,
+  amount: member.price,
+  createdAt:member.updatedAt,
+  isSingle: true
+}));
+pendingTeams=[...pendingTeams,...parsedSingles.filter((data)=>data.paymentStatus==="DONE")]
+verifiedTeams=[...verifiedTeams,...parsedSingles.filter((data)=>data.paymentStatus==="PAID")]
+failedteams=[...failedteams,...parsedSingles.filter(data=>data.paymentStatus==="FAILED")]
+Pendingteams=[...Pendingteams,...parsedSingles.filter(data=>data.paymentStatus==="PENDING")]
+let totalCollected = verifiedTeams.reduce((sum, team) => {
+  const amount = team.isSingle
+    ? Number(team.amount)
+    : Number(calculateTotalAmount(team));
 
+  return sum + amount;
+}, 0);
+let totalSingelsCollected = parsedSingles
+  .filter(data => data.paymentStatus === "PAID")
+  .reduce((sum, data) => sum + Number(data.amount), 0);
+
+let totalSingel = parsedSingles.filter(
+  data => data.paymentStatus === "PAID"
+).length;
+
+  const GetCountParticepents=()=>{
+    let count=0;
+    for(const team of verifiedTeams ){
+      if(team.isSingle){
+        continue
+      }
+      count+=1 + team.teamMembers.length;
+    }
+    return count;
+  }
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
@@ -57,7 +138,12 @@ export default function AdminPage() {
                 <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                   <p className="text-sm font-medium text-gray-600">Total Collected</p>
                   <p className="mt-2 text-3xl font-bold text-green-600">₹{totalCollected.toLocaleString('en-IN')}</p>
-                  <p className="mt-1 text-xs text-gray-500">{verifiedTeams.length} verified teams</p>
+                  <p className="mt-1 text-xs text-gray-500">{verifiedTeams.length} verified teams={GetCountParticepents()}</p>
+                </div>
+                 <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                  <p className="text-sm font-medium text-gray-600">Total Singel Collected</p>
+                  <p className="mt-2 text-3xl font-bold text-green-600">₹{totalSingelsCollected.toLocaleString('en-IN')}</p>
+                  <p className="mt-1 text-xs text-gray-500"> verified Singel={totalSingel}</p>
                 </div>
                 <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                   <p className="text-sm font-medium text-gray-600">Pending Verification</p>
@@ -91,7 +177,7 @@ export default function AdminPage() {
                     <thead className="bg-gray-50 text-xs font-medium uppercase tracking-wider text-gray-700">
                       <tr>
                         <th className="px-4 py-3">Team Name</th>
-                        <th className="px-4 py-3">Team Code</th>
+                        <th className="px-4 py-3">Team Lead</th>
                         <th className="px-4 py-3">Lead Mobile</th>
                         <th className="px-4 py-3 text-center">Members</th>
                         <th className="px-4 py-3">Transaction ID</th>
@@ -111,24 +197,27 @@ export default function AdminPage() {
                         pendingTeams.map((team) => (
                           <tr key={team.teamcode} className="transition-colors hover:bg-gray-50">
                             <td className="px-4 py-3 font-medium text-gray-900">{team.teamName}</td>
-                            <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.teamcode}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.teamLead.name}</td>
                             <td className="px-4 py-3 text-gray-600">{team.teamLead.mobile}</td>
                             <td className="px-4 py-3 text-center text-gray-600">{1 + team.teamMembers.length}</td>
                             <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.transactionId}</td>
                             <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.createdAt}</td>
                             <td className="px-4 py-3 text-right font-semibold text-gray-900">
-                              ₹{calculateTotalAmount(team)}
+                              ₹{team.isSingle?team.amount:
+                              calculateTotalAmount(team)}
                             </td>
                             <td className="px-4 py-3">
                               <div className="flex items-center justify-center gap-2">
                                 <button
-                                  onClick={() => verifyTeam(team.teamName)}
+                                  onClick={() =>
+                                    team.isSingle?verifysingel(team.teamLead.name,team._id): verifyTeam(team.teamName)
+                                    }
                                   className="rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                                 >
                                   Verify
                                 </button>
                                 <button
-                                  onClick={() => markFraud(team.teamName)}
+                                  onClick={() => team.isSingle?marksingelFraud(team.teamLead.name,team._id):markFraud(team.teamName)}
                                   className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                 >
                                   Fraud
@@ -142,6 +231,7 @@ export default function AdminPage() {
                   </table>
                 </div>
               </div>
+         
             </section>
 
             <section className="mb-12">
@@ -158,7 +248,7 @@ export default function AdminPage() {
                     <thead className="bg-gray-50 text-xs font-medium uppercase tracking-wider text-gray-700">
                       <tr>
                         <th className="px-4 py-3">Team Name</th>
-                        <th className="px-4 py-3">Team Code</th>
+                        <th className="px-4 py-3">Team Lead</th>
                         <th className="px-4 py-3">Lead Mobile</th>
                         <th className="px-4 py-3 text-center">Members</th>
                         <th className="px-4 py-3">Transaction ID</th>
@@ -176,12 +266,13 @@ export default function AdminPage() {
                         verifiedTeams.map((team) => (
                           <tr key={team.teamcode} className="transition-colors hover:bg-gray-50">
                             <td className="px-4 py-3 font-medium text-gray-900">{team.teamName}</td>
-                            <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.teamcode}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.teamLead.name}</td>
                             <td className="px-4 py-3 text-gray-600">{team.teamLead.mobile}</td>
                             <td className="px-4 py-3 text-center text-gray-600">{1 + team.teamMembers.length}</td>
                             <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.transactionId}</td>
                             <td className="px-4 py-3 text-right font-semibold text-gray-900">
-                              ₹{calculateTotalAmount(team)}
+                              ₹{team.isSingle?team.amount:
+                              calculateTotalAmount(team)}
                             </td>
                           </tr>
                         ))
@@ -206,7 +297,7 @@ export default function AdminPage() {
                     <thead className="bg-gray-50 text-xs font-medium uppercase tracking-wider text-gray-700">
                       <tr>
                         <th className="px-4 py-3">Team Name</th>
-                        <th className="px-4 py-3">Team Code</th>
+                        <th className="px-4 py-3">Team Lead</th>
                         <th className="px-4 py-3">Lead Mobile</th>
                         <th className="px-4 py-3 text-center">Members</th>
                         <th className="px-4 py-3">Transaction ID</th>
@@ -224,7 +315,7 @@ export default function AdminPage() {
                         failedteams.map((team) => (
                           <tr key={team.teamcode} className="transition-colors hover:bg-gray-50">
                             <td className="px-4 py-3 font-medium text-gray-900">{team.teamName}</td>
-                            <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.teamcode}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.teamLead.name}</td>
                             <td className="px-4 py-3 text-gray-600">{team.teamLead.mobile}</td>
                             <td className="px-4 py-3 text-center text-gray-600">{1 + team.teamMembers.length}</td>
                             <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.transactionId}</td>
@@ -254,7 +345,7 @@ export default function AdminPage() {
                     <thead className="bg-gray-50 text-xs font-medium uppercase tracking-wider text-gray-700">
                       <tr>
                         <th className="px-4 py-3">Team Name</th>
-                        <th className="px-4 py-3">Team Code</th>
+                        <th className="px-4 py-3">Team Lead</th>
                         <th className="px-4 py-3">Lead Mobile</th>
                         <th className="px-4 py-3 text-center">Members</th>
                         <th className="px-4 py-3">Transaction ID</th>
@@ -272,7 +363,7 @@ export default function AdminPage() {
                         Pendingteams.map((team) => (
                           <tr key={team.teamcode} className="transition-colors hover:bg-gray-50">
                             <td className="px-4 py-3 font-medium text-gray-900">{team.teamName}</td>
-                            <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.teamcode}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.teamLead.name}</td>
                             <td className="px-4 py-3 text-gray-600">{team.teamLead.mobile}</td>
                             <td className="px-4 py-3 text-center text-gray-600">{1 + team.teamMembers.length}</td>
                             <td className="px-4 py-3 font-mono text-xs text-gray-600">{team.transactionId}</td>

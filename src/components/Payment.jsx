@@ -22,7 +22,7 @@ const [loading, setLoading] = useState(false);
 
   const totalMembers = 1 + teamMembersWithAmount.length;
 const handlePayment = async () => {
-  if (loading) return; // prevent double click
+  if (loading) return; 
 
   setLoading(true);
 

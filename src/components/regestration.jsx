@@ -188,11 +188,13 @@ export default function Registration({setform, onsubmit}) {
           `https://hackthon-backend-1-d2zj.onrender.com/check-team-name?name=${formData.teamName}`
         );
         setTeamStatus(res.data.available);
+        console.log(res.data.available)
       } catch (err) {
         setTeamStatus(null);
       } finally {
         setChecking(false);
       }
+      
     }, 600); 
 
     return () => clearTimeout(timer);
@@ -267,7 +269,26 @@ export default function Registration({setform, onsubmit}) {
                     Team Information
                   </h2>
                 </div>
-
+              <button
+                type="button"
+                onClick={()=>{
+                  navigate("/single-Reg")
+                }}
+                className="w-full flex items-center justify-center gap-2 py-3 md:py-4 text-white font-bold text-base md:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:brightness-100"
+                style={{
+                  background: true 
+                    ? 'linear-gradient(135deg, #0f2027, #1d2a38, #203a43)' 
+                    : 'linear-gradient(135deg, #9ca3af, #6b7280, #4b5563)',
+                }}
+              >
+                <MoveRight className="w-5 h-5 md:w-6 md:h-6" />
+                <span>
+                  {true 
+                    ? 'Proceed to Single Registration' 
+                    : `Payment (${totalMembers}/4-6 members)`
+                  }
+                </span>
+              </button>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold mb-2 text-gray-700">
@@ -288,7 +309,7 @@ export default function Registration({setform, onsubmit}) {
                       }}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#203a43] focus:outline-none transition-all duration-300 bg-gray-50 hover:bg-white"
                     />
-                    {checking && (
+                    {/* {checking && (
                       <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
                         <Loader2 className="animate-spin" size={14} />
                         Checking availability...
@@ -305,7 +326,7 @@ export default function Registration({setform, onsubmit}) {
                         <XCircle size={16} />
                         Team name already taken
                       </p>
-                    )}
+                    )} */}
                   </div>
 
                   <div>
@@ -573,6 +594,7 @@ export default function Registration({setform, onsubmit}) {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                    
                     <div>
                       <label className="block text-sm font-semibold mb-2 text-gray-700">
                         Name <span className="text-red-500">*</span>
