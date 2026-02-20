@@ -3,7 +3,7 @@
     
     try {
       const res = await axios.get(
-        `http://localhost:6961/download-ppt?teamName=${teamName}`,
+        `https://hackthon-backend-1-d2zj.onrender.com/download-ppt?teamName=${teamName}`,
         { responseType: "blob" }
       );
 

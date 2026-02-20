@@ -9,9 +9,11 @@ import { Timeline } from "@/components/ui/timeline";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import Navbar from "@/components/Navbar";
+import NotificationBanner from "@/components/NotificationBanner";
 import CountdownTimer from "@/components/CountdownTimer";
 import FloatingElements from "@/components/FloatingElements";
 import { Button } from "@/components/ui/button";
+import RegistrationModal from "@/components/RegistrationModal";
 
 
 
@@ -19,7 +21,8 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   const canvasRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const registrationUrl = "/registration";
+  const [showNotification, setShowNotification] = useState(true);
+  const [isRegModalOpen, setIsRegModalOpen] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     setIsLoaded(true);
@@ -131,7 +134,7 @@ export default function Home() {
   };
 
   const handleRegistration = () => {
-    window.location.href = registrationUrl;
+    setIsRegModalOpen(true);
   };
 
   return (
@@ -145,6 +148,10 @@ export default function Home() {
       </div>
 
       <Navbar />
+
+      {showNotification && (
+        <NotificationBanner onClose={() => setShowNotification(false)} />
+      )}
 
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <FloatingElements />
@@ -160,6 +167,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             {/* Badge */}
+            <br></br>
             <motion.div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-500/30 bg-teal-500/10 mb-8"
               initial={{ opacity: 0, scale: 0.8 }}
@@ -177,7 +185,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <span className="bg-gradient-to-r from-teal-300 via-cyan-400 to-teal-500 bg-clip-text text-transparent">UDHBAV</span>
+              <span className="bg-gradient-to-r from-teal-300 via-cyan-400 to-teal-500 bg-clip-text text-transparent">UDBHAV</span>
               <br />
               <span className="text-white">2K26</span>
             </motion.h1>
@@ -214,13 +222,24 @@ export default function Home() {
             >
               <Button
                 size="lg"
-                className="text-lg px-8 py-6 shadow-lg shadow-teal-500/25"
+                className="text-lg px-5 py-4 shadow-lg shadow-teal-500/25 bg-transparent border border-teal-500/30 "
                 onClick={handleRegistration}
               >
                 Register Now
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </motion.div>
+            <Button
+                size="lg"
+                className="mt-7 text-lg px-4 py-3 btn-yellow-blink rounded-full"
+                onClick={() => navigate('/idea-submission')}
+              >
+                <span className="relative z-10 flex items-center">
+                  Submit Idea
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </span>
+              </Button>
+            
 
             {/* Stats */}
             <motion.div
@@ -230,7 +249,7 @@ export default function Home() {
               transition={{ delay: 1.1 }}
             >
               {[
-                { value: "100+", label: "Participants" },
+                { value: "200+", label: "Participants" },
                 { value: "24H", label: "Duration" },
                 { value: "35K+", label: "In Prizes" },
                 { value: "20+", label: "Mentors" },
@@ -277,10 +296,10 @@ export default function Home() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-               <span className="bg-gradient-to-r from-teal-300 via-cyan-400 to-teal-500 bg-clip-text text-transparent">About Udhbav</span>
+               <span className="bg-gradient-to-r from-teal-300 via-cyan-400 to-teal-500 bg-clip-text text-transparent">About Udbhav</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-3xl mx-auto mt-8">
-              Udhbav 2K25 is the flagship hackathon that brings together the brightest minds
+              Udbhav 2K26 is the flagship hackathon that brings together the brightest minds
               to solve real-world problems through technology. Join us for 24 hours of innovation,
               learning, and unforgettable experiences.
             </p>
@@ -461,26 +480,26 @@ export default function Home() {
       </section>
 
       {/*Timeline Section*/}
-      <section id="timeline" className="relative py-20 px-4 md:px-8 bg-transparent overflow-hidden">
+      <section id="timeline" className="relative py-20 px-4 md:px-8 bg-transparent">
         <Timeline
           data={[
             {
-              date: "FEB 5, 2025",
+              date: "FEB 5, 2026",
               title: "Registration Opens",
               content: "Start your hackathon journey with initial registration.",
             },
             {
-              date: "FEB 9-23, 2025",
+              date: "FEB 9-23, 2026",
               title: "Idea Submission",
-              content: "Submit your problem statement ideas in the google form.",
+              content: "Submit your problem statement ideas in the website.",
             },
             {
-              date: "FEB 23-28, 2025",
+              date: "FEB 23-28, 2026",
               title: "Idea Presentation Deadline",
               content: "Present your Idea for initial screening.No Eliminations",
             },
             {
-              date: "MAR 5-6, 2025",
+              date: "MAR 5-6, 2026",
               title: "Hackathon",
               content: "24 hours of non-stop innovation, coding, and building.",
             },
@@ -502,7 +521,7 @@ export default function Home() {
               Ready to build something unforgettable?
             </h3>
             <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mb-8">
-              Join UDHBAV 2K26 for 24 hours of focused creation, rapid learning, and a community
+              Join UDBHAV 2K26 for 24 hours of focused creation, rapid learning, and a community
               that ships bold ideas. Your next breakthrough starts here.
             </p>
             <Button
@@ -528,7 +547,7 @@ export default function Home() {
                 <div className="w-10 h-10 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg flex items-center justify-center">
                   <Zap className="text-white" size={24} />
                 </div>
-                <span className="text-white font-bold text-xl">UDHBAV 2026</span>
+                <span className="text-white font-bold text-xl">UDBHAV 2026</span>
               </div>
               <p className="text-gray-400 text-sm">
                 Empowering innovation through collaborative problem-solving
@@ -549,11 +568,11 @@ export default function Home() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-gray-400">
                   <Mail size={16} />
-                  <span className="text-sm">info@udhbav.com</span>
+                  <span className="text-sm">udbhav2026.csi@gmail.com</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-400">
                   <Phone size={16} />
-                  <span className="text-sm">+91 98765 43210</span>
+                  <span className="text-sm">+91 8465833353</span>
                 </div>
               </div>
             </div>
@@ -561,11 +580,13 @@ export default function Home() {
 
           <div className="pt-8 border-t border-white/10 text-center">
             <p className="text-gray-400 text-sm">
-              © 2026 UDHBAV 2K26. All rights reserved.
+              © 2026 UDBHAV 2K26. All rights reserved.
             </p>
           </div>
         </div>
       </footer>
+
+      <RegistrationModal isOpen={isRegModalOpen} onClose={() => setIsRegModalOpen(false)} />
     </div>
   );
 }

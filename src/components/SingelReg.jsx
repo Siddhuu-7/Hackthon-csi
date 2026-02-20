@@ -38,7 +38,7 @@ export default function SingleRegistration({setform, onsubmit}) {
     }
 
     try {
-      localStorage.setItem("singelformdata", JSON.stringify(formData));
+      // localStorage.setItem("singelformdata", JSON.stringify(formData));
       
       setform(formData);   
       onsubmit();          
@@ -48,12 +48,12 @@ export default function SingleRegistration({setform, onsubmit}) {
     }
   };
 
-  useEffect(() => {
-    const saved = localStorage.getItem("formdata");
-    if (saved) {
-      setFormData(JSON.parse(saved));
-    }
-  }, []);
+  // useEffect(() => {
+  //   // const saved = localStorage.getItem("singelformdata");
+  //   if (saved) {
+  //     setFormData(JSON.parse(saved));
+  //   }
+  // }, []);
 
   return (
     <div className="w-full">

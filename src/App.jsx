@@ -3,7 +3,7 @@ import Homepage from './pages/Home';
 import Regestration from "./pages/RegestrationPage"
 import React, { useCallback, useState } from 'react'
 import ProblemStatement from './pages/ProblemStatement';
-import IdeaSubmission from './pages/IdeaSubmission';
+import IdeaSubmission from "./pages/ideaSubmission";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Paymentpage from './pages/paymentpage';
 import AdminPage from './pages/AdminPage';
@@ -11,6 +11,7 @@ import Preloader from './components/Preloader';
 import { AnimatePresence } from 'framer-motion';
 import SingelRegPage from "./pages/SingelRegPage"
 import SingelPayment from "./pages/singelPayment"
+import SubmessionsPage from './pages/SubmessionsPage';
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,6 +33,7 @@ export default function App() {
       <Route element={<AdminPage />} path="/admin" />
       <Route element={<SingelRegPage/>} path='/single-Reg'/>
       <Route element={<SingelPayment/>} path='single/payment'/>
+      <Route element={<SubmessionsPage/>} path="/admin/SubmessionsPage"/>
     </Routes>
     </BrowserRouter>
   )

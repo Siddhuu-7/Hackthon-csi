@@ -123,31 +123,29 @@ export default function IdeaSubmission() {
 
   // Verify team code
   const handleVerifyTeam = async () => {
-    // if (!teamCode.trim()) {
-    //   setError('Please enter a team code');
-    //   return;
-    // }
+    if (!teamCode.trim()) {
+      setError('Please enter a team code');
+      return;
+    }
 
-    // setIsVerifying(true);
-    // setError('');
-    // setTeamData(null);
+    setIsVerifying(true);
+    setError('');
+    setTeamData(null);
 
-    // try {
-    //   // Fetch team details
-    //   const teamRes = await axios.get(`https://hackthon-backend-1-d2zj.onrender.com/get-team-details/${teamCode}`);
-    //   if (!teamRes) {
-    //     throw new Error('Team not found. Please check your team code.');
-    //   }
+    try {
+      // Fetch team details
+      const teamRes = await axios.get(`https://hackthon-backend-1-d2zj.onrender.com/get-team-details/${teamCode}`);
+      if (!teamRes) {
+        throw new Error('Team not found. Please check your team code.');
+      }
       
-    //   setTeamData(teamRes.data);
-    // } catch (err) {
-    //   setError(err.message || 'Failed to verify team. Please try again.');
-    // } finally {
-    //   setIsVerifying(false);
-    // }
-    await axios.post("http://localhost:6961/phonepe",{
-      amount:100
-    })
+      setTeamData(teamRes.data);
+    } catch (err) {
+      setError(err.message || 'Failed to verify team. Please try again.');
+    } finally {
+      setIsVerifying(false);
+    }
+    
   };
 
   const handleSubmitIdea = async () => {
